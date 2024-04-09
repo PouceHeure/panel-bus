@@ -61,7 +61,7 @@ const displayBusSchedule = (busData) => {
                 lineTitle.classList.add('line-title');
                 lineTitle.style.backgroundColor = `#${line.line.color}`;
                 const info_direction = directionMetaNames[line.line.number]?.[line.direction.id] ?? line.direction.name;
-                lineTitle.innerHTML = `Ligne ${line.line.number} <span class='direction-title'>(${info_direction})</span>`;
+                lineTitle.innerHTML = `Ligne ${line.line.number} <span class='direction-title'>${info_direction}</span>`;
                 lineContainer.appendChild(lineTitle);
 
                 const directionContainer = document.createElement('div');
