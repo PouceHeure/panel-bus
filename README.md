@@ -1,6 +1,6 @@
 # Panel Bus
 
-Page: https://github.com/PouceHeure/panel-bus/
+Page: https://pouceheure.github.io/panel-bus/
 
 ## How Use It ?
 
