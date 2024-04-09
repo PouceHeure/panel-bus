@@ -15,7 +15,7 @@ const directionMetaNames = { // "ligne.number": "direction.id"
 
 function getStationIDFromURL() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('stationID'); // "31500" si l'URL est index.html?stationID=31500
+    return params.get('stationID'); // index.html?stationID=31500
 }
 
 
