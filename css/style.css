@@ -69,3 +69,26 @@ body, html {
     margin-right: 5px;
     color: #007BFF; /* Ou toute autre couleur de votre choix */
 }
+
+#controlsContainer {
+    display: flex;
+    justify-content: space-between; /* Écarte les enfants aux extrémités du conteneur */
+    align-items: center; /* Centre les enfants verticalement */
+    padding: 20px; /* Ajoute un peu d'espace autour du conteneur */
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne en dessous si l'espace est insuffisant */
+    font-size: 20px;
+}
+
+#legend, #autoRefreshOption {
+    display: flex;
+    align-items: center; /* Centre verticalement les éléments à l'intérieur de chaque div */
+}
+
+.real-time, .scheduled-time {
+    margin-right: 10px; /* Ajoute un peu d'espace entre les spans et leurs labels respectifs */
+}
+
+#autoRefreshOption {
+    display: flex;
+    align-items: center; /* Assure que la checkbox et le label sont alignés verticalement */
+}

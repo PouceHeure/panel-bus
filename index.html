@@ -2,15 +2,21 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Horaires des bus</title>
+    <title>Basic Bus TIC</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="currentTime"></div>
-    <div id="legend">
-        Légende: 
-        <span class="real-time">Temps Réel</span>,
-        <span class="scheduled-time">Horaire Planifié</span>
+    <div id="controlsContainer">
+        <div id="legend">
+            Legend: 
+            <span class="real-time">Real Time</span>,
+            <span class="scheduled-time">Scheduled Time</span>
+        </div>
+        <div id="autoRefreshOption">
+            <input type="checkbox" id="autoRefreshCheckbox" checked>
+            <label for="autoRefreshCheckbox">Auto Refresh</label>
+        </div>
     </div>
 
     <div id="busInfo"></div>
