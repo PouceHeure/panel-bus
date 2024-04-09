@@ -1,12 +1,14 @@
 # Panel Bus
 
+Page: https://github.com/PouceHeure/panel-bus/
+
 ## How Use It ?
 
 ```html
 # generic
 <URL>/?stationID=<ID>
 # github page
-https://pouceheure.github.io/basic-bus-tic/?stationID=<ID>
+https://pouceheure.github.io/panel-bus/?stationID=<ID>
 ```
 
 - default ID: 31500 (= "Guy Denielou")
