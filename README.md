@@ -14,7 +14,7 @@ https://pouceheure.github.io/panel-bus/?stationID=<ID>
 - default ID: 31500 (= "Guy Denielou")
 - find ID:
   - search the stop there: https://www.oise-mobilite.fr/horaires-arret/;
-  - once found, select the number at the end of the URL; 
+  - once found, select the number at the end of the URL;
 
 ## Station Example List
 

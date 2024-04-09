@@ -52,6 +52,7 @@ function fetchAndDisplayBusSchedule() {
             hasRealTimeData = true; // Ensures the rest of the function executes normally outside the specified hours
         }
 
+        // sometimes, the API returns not update information from real time data
         if (!hasRealTimeData) {
             console.log("No real-time data available for this refresh cycle.");
             // Skip this refresh cycle but keep the auto-refresh active
