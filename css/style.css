@@ -1,0 +1,71 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+#currentTime, #legend {
+    padding: 20px;
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+}
+#legend {
+    font-size: 18px;
+    font-weight: normal;
+    text-align: left;
+}
+#legend span {
+    font-size: 16px;
+    padding-left: 5px;
+}
+
+#busInfo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px;
+    gap: 20px;
+}
+.bus-container {
+    flex: 1;
+    min-width: 300px;
+    background-color: #f0f0f0;
+    color: #000;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.line-title {
+    padding: 10px 15px;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+}
+.direction-title {
+    font-size: 20px;
+}
+.direction-container {
+    padding: 10px 15px;
+    font-size: 20px;
+    opacity: 0.8;
+}
+.time-info {
+    margin-left: 10px;
+    font-size: 20px;
+}
+.real-time {
+    color: #007BFF;
+    font-style: normal;
+}
+.scheduled-time {
+    color: #666;
+}
+
+.real-time::before {
+    content: '📶';
+    display: inline-block;
+    margin-right: 5px;
+    color: #007BFF; /* Ou toute autre couleur de votre choix */
+}
