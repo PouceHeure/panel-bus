@@ -63,6 +63,11 @@ body, html {
     color: #666;
 }
 
+.scheduled-time::before {
+    content: '\1F553 '; /* Symbole d'horloge (assurez-vous que l'espace après le code est inclus pour séparer le symbole du texte) */
+    margin-right: 5px;
+}
+
 .real-time::before {
     content: '📶';
     display: inline-block;

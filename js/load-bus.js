@@ -2,7 +2,6 @@
 let stationID = 31500 // guy denielou 
 let stationName = "Waiting Connection"
 
-
 const intervalTimeRefresh = 10 * 1000 // ms
 const directionMetaNames = { // "line.number": {"direction.id": <label>}  
     "1": { "1": "Hôpital", "2": "Gare" },
@@ -18,29 +17,6 @@ function getStationIDFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('stationID'); // index.html?stationID=31500
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    const newStationID = getStationIDFromURL();
-    if(newStationID){
-        stationID = newStationID
-    }
- });
-
-document.addEventListener('DOMContentLoaded', function() {
-    fetchAndDisplayBusSchedule();
-    toggleAutoRefresh(true);
-
-    document.getElementById('autoRefreshCheckbox').addEventListener('change', function() {
-        toggleAutoRefresh(this.checked);
-    });
-});
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     const currentLocation = window.location.href;
-//     const linkElement = document.getElementById('currentLink');
-//     linkElement.href = currentLocation; // Met à jour l'attribut href avec l'URL actuelle
-//     linkElement.textContent = currentLocation; // Optionnel: Met à jour le texte du lien avec l'URL actuelle
-// });
 
 let autoRefreshInterval = null;
 toggleAutoRefresh(true);
@@ -61,27 +37,52 @@ function updateDateAndNameStation(){
     document.getElementById('currentTime').textContent = `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} - ${stationName}`;
 }
 
-
- function fetchAndDisplayBusSchedule() {
-    fetch('https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/'+stationID+'/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB')
+function fetchAndDisplayBusSchedule() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    
+    fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB`)
     .then(response => response.json())
     .then(data => {
-        if (data && data.length > 0 && data[0].lines && data[0].lines.length > 0) {
-            // Met à jour stationName avec le nom du premier arrêt trouvé
+        let hasRealTimeData = data && data.length > 0 && data[0].lines.some(line => line.times.some(time => time.realDateTime));
+
+        // Check if the current time is outside of the service hours (6 AM to 9 PM)
+        if (currentHour < 6 || currentHour > 21) {
+            console.log("Outside service hours. Refreshing continues without real-time data condition.");
+            hasRealTimeData = true; // Ensures the rest of the function executes normally outside the specified hours
+        }
+
+        if (!hasRealTimeData) {
+            console.log("No real-time data available for this refresh cycle.");
+            // Skip this refresh cycle but keep the auto-refresh active
+            return;
+        }
+
+        // If real-time data is present, proceed with updating the display
+        if (data[0].lines && data[0].lines.length > 0) {
+            // Update stationName with the name of the first stop found
             stationName = data[0].lines[0].stop.name;
             updateDateAndNameStation();
         }
+
         displayBusSchedule(data);
     })
-    .catch(error => console.error('Erreur lors de la récupération des données:', error));
-    updateDateAndNameStation();
+    .catch(error => console.error('Error fetching data:', error));
     
+    updateDateAndNameStation();
+}
+
+function updateDateAndNameStation(){
+    document.getElementById('currentTime').textContent = `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} - ${stationName}`;
+}
+
+function clearContainer(container){
+    container.innerHTML = ''; 
 }
 
 const displayBusSchedule = (busData) => {
     const container = document.getElementById('busInfo');
-    container.innerHTML = ''; // Efface les données précédentes
-
+    clearContainer(container);
     busData.forEach(transport => {
         if (transport.transportMode === "Bus") {
             transport.lines.forEach(line => {
@@ -105,14 +106,12 @@ const displayBusSchedule = (busData) => {
                 futureTimes.forEach((time, index) => {
                     const departTime = new Date(time.realDateTime || time.dateTime);
                     const now = new Date();
-                    let diff = (departTime - now) / 60000; // Différence en minutes
+                    let diff = (departTime - now) / 60000;
 
                     const timeElement = document.createElement('p');
                     timeElement.classList.add('time-info');
 
-                    // Utiliser timeDifference pour les temps en dessous de 1 minute
                     if (diff < 1) {
-                        const seconds = time.timeDifference;
                         timeElement.textContent = "< 1 min";
                     } else {
                         timeElement.textContent = `${Math.round(diff)} min`;
@@ -128,3 +127,21 @@ const displayBusSchedule = (busData) => {
         }
     });
 };
+
+// events
+
+document.addEventListener('DOMContentLoaded', function() {
+    const newStationID = getStationIDFromURL();
+    if(newStationID){
+        stationID = newStationID
+    }
+ });
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchAndDisplayBusSchedule();
+    toggleAutoRefresh(true);
+
+    document.getElementById('autoRefreshCheckbox').addEventListener('change', function() {
+        toggleAutoRefresh(this.checked);
+    });
+});

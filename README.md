@@ -1,4 +1,6 @@
-## How Use It
+# Panel Bus TIC
+
+## How Use It ?
 
 ```html
 # generic
@@ -7,12 +9,12 @@
 https://pouceheure.github.io/basic-bus-tic/?stationID=<ID>
 ```
 
-- default ID: 31500 (="Guy Denielou")
-- find ID: 
-  - go search your stop there: https://www.oise-mobilite.fr/horaires-arret/;
+- default ID: 31500 (= "Guy Denielou")
+- find ID:
+  - search the stop there: https://www.oise-mobilite.fr/horaires-arret/;
   - once found, select the number at the end of the URL; 
 
-## Example Station List
+## Station Example List
 
 - Guy Denielou: https://pouceheure.github.io/basic-bus-tic/?stationID=31500
 - DeLaidde: https://pouceheure.github.io/basic-bus-tic/?stationID=31661
