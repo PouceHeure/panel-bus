@@ -1,4 +1,4 @@
-# Panel Bus TIC
+# Panel Bus
 
 ## How Use It ?
 
