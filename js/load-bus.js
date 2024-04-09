@@ -2,6 +2,7 @@
 let stationID = 31500 // guy denielou 
 let stationName = "Waiting Connection"
 
+
 const intervalTimeRefresh = 10 * 1000 // ms
 const directionMetaNames = { // "line.number": {"direction.id": <label>}  
     "1": { "1": "Hôpital", "2": "Gare" },
@@ -20,7 +21,6 @@ function getStationIDFromURL() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const newStationID = getStationIDFromURL();
-    console.log("test" + newStationID);
     if(newStationID){
         stationID = newStationID
     }
@@ -34,6 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleAutoRefresh(this.checked);
     });
 });
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     const currentLocation = window.location.href;
+//     const linkElement = document.getElementById('currentLink');
+//     linkElement.href = currentLocation; // Met à jour l'attribut href avec l'URL actuelle
+//     linkElement.textContent = currentLocation; // Optionnel: Met à jour le texte du lien avec l'URL actuelle
+// });
 
 let autoRefreshInterval = null;
 toggleAutoRefresh(true);
@@ -56,7 +63,6 @@ function updateDateAndNameStation(){
 
 
  function fetchAndDisplayBusSchedule() {
-    console.log("update")
     fetch('https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/'+stationID+'/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB')
     .then(response => response.json())
     .then(data => {

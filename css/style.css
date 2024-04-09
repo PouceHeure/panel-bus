@@ -92,3 +92,16 @@ body, html {
     display: flex;
     align-items: center; /* Assure que la checkbox et le label sont alignés verticalement */
 }
+
+/* #pageLink {
+    margin-top: 20px; /* Ajoute un espace au-dessus du lien */
+} */
+
+#currentLink {
+    color: #007bff; /* Couleur bleue pour le lien, par exemple */
+    text-decoration: none; /* Supprime le soulignement par défaut */
+}
+
+#currentLink:hover {
+    text-decoration: underline; /* Ajoute un soulignement au survol pour une meilleure accessibilité */
+}
