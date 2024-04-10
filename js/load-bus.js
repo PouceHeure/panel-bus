@@ -2,6 +2,7 @@
 let stationID = 31500 // guy denielou 
 let stationName = "Waiting Connection"
 
+const autoRefreshDefault = true; 
 const intervalTimeRefresh = 10 * 1000 // ms
 const directionMetaNames = { // "line.number": {"direction.id": <label>}  
     "1": { "1": "Hôpital", "2": "Gare" },
@@ -22,7 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
         stationID = newStationID
     }
     fetchAndDisplayBusSchedule();
-    
+
+    document.getElementById('autoRefreshCheckbox').checked = autoRefreshDefault;
+    toggleAutoRefresh(autoRefreshDefault)
     document.getElementById('autoRefreshCheckbox').addEventListener('change', function() {
         toggleAutoRefresh(this.checked);
     });
@@ -55,6 +58,11 @@ function updateDateAndNameStation(){
     document.getElementById('currentTime').textContent = `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} - ${stationName}`;
 }
 
+function bodyIsEmpty(elementId){
+    const element = document.getElementById(elementId);
+    return element && element.textContent.trim() === ''
+}
+
 function fetchAndDisplayBusSchedule() {
     const now = new Date();
     const currentHour = now.getHours();
@@ -69,7 +77,7 @@ function fetchAndDisplayBusSchedule() {
             console.log("Outside service hours. Refreshing continues without real-time data condition.");
             onServiceTime = false; // Ensures the rest of the function executes normally outside the specified hours
         }
-        let firstLoad =  document.getElementById('busInfo') == "";
+        let firstLoad =  bodyIsEmpty("busInfo");
 
         // sometimes, the API returns not update information from real time data
         if (!hasRealTimeData && onServiceTime && !firstLoad) {
