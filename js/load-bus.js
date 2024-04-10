@@ -120,8 +120,8 @@ const displayBusSchedule = (busData) => {
                 const lineTitle = document.createElement('div');
                 lineTitle.classList.add('line-title');
                 lineTitle.style.backgroundColor = `#${line.line.color}`;
-                const info_direction = directionMetaNames[line.line.number]?.[line.direction.id] ?? line.direction.name.split("/")[0].trim();
-                lineTitle.innerHTML = `Line ${line.line.number} <span class='direction-title'>${info_direction}</span>`;
+                const labelDirection = directionMetaNames[line.line.number]?.[line.direction.id] ?? line.direction.name.split("/")[0].trim();
+                lineTitle.innerHTML = `Line ${line.line.number} <span class='direction-title'>${labelDirection}</span>`;
                 lineContainer.appendChild(lineTitle);
 
                 const directionContainer = document.createElement('div');
@@ -135,7 +135,7 @@ const displayBusSchedule = (busData) => {
                     const departTime = new Date(time.realDateTime || time.dateTime);
                     const now = new Date();
                     let diff = (departTime - now) / 60000;
-
+                    
                     const timeElement = document.createElement('p');
                     timeElement.classList.add('time-info');
 
