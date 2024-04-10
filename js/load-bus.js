@@ -13,13 +13,31 @@ const directionMetaNames = { // "line.number": {"direction.id": <label>}
     "ARC Express": { "1": "Verberie", "2": "Gare" },
 };
 
+
+// events
+
+document.addEventListener('DOMContentLoaded', function() {
+    const newStationID = getStationIDFromURL();
+    if(newStationID){
+        stationID = newStationID
+    }
+    fetchAndDisplayBusSchedule();
+    
+    document.getElementById('autoRefreshCheckbox').addEventListener('change', function() {
+        toggleAutoRefresh(this.checked);
+    });
+ });
+
+
+
 function getStationIDFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('stationID'); // index.html?stationID=31500
 }
 
+
+
 let autoRefreshInterval = null;
-toggleAutoRefresh(true);
 
 function toggleAutoRefresh(isEnabled) {
     if (isEnabled) {
@@ -93,7 +111,7 @@ const displayBusSchedule = (busData) => {
                 const lineTitle = document.createElement('div');
                 lineTitle.classList.add('line-title');
                 lineTitle.style.backgroundColor = `#${line.line.color}`;
-                const info_direction = directionMetaNames[line.line.number]?.[line.direction.id] ?? line.direction.name;
+                const info_direction = directionMetaNames[line.line.number]?.[line.direction.id] ?? line.direction.name.split("/")[0].trim();
                 lineTitle.innerHTML = `Line ${line.line.number} <span class='direction-title'>${info_direction}</span>`;
                 lineContainer.appendChild(lineTitle);
 
@@ -128,21 +146,3 @@ const displayBusSchedule = (busData) => {
         }
     });
 };
-
-// events
-
-document.addEventListener('DOMContentLoaded', function() {
-    const newStationID = getStationIDFromURL();
-    if(newStationID){
-        stationID = newStationID
-    }
- });
-
-document.addEventListener('DOMContentLoaded', function() {
-    fetchAndDisplayBusSchedule();
-    toggleAutoRefresh(true);
-
-    document.getElementById('autoRefreshCheckbox').addEventListener('change', function() {
-        toggleAutoRefresh(this.checked);
-    });
-});
