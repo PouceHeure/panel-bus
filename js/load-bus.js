@@ -63,15 +63,16 @@ function fetchAndDisplayBusSchedule() {
     .then(response => response.json())
     .then(data => {
         let hasRealTimeData = data && data.length > 0 && data[0].lines.some(line => line.times.some(time => time.realDateTime));
-
+        let onServiceTime = true;
         // Check if the current time is outside of the service hours (6 AM to 9 PM)
         if (currentHour < 6 || currentHour > 21) {
             console.log("Outside service hours. Refreshing continues without real-time data condition.");
-            hasRealTimeData = true; // Ensures the rest of the function executes normally outside the specified hours
+            onServiceTime = false; // Ensures the rest of the function executes normally outside the specified hours
         }
+        let firstLoad =  document.getElementById('busInfo') == "";
 
         // sometimes, the API returns not update information from real time data
-        if (!hasRealTimeData) {
+        if (!hasRealTimeData && onServiceTime && !firstLoad) {
             console.log("No real-time data available for this refresh cycle.");
             // Skip this refresh cycle but keep the auto-refresh active
             return;
