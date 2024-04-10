@@ -16,7 +16,7 @@ https://pouceheure.github.io/panel-bus/?stationID=<ID>
   - search the stop there: https://www.oise-mobilite.fr/ - section "Horaires" ;
   - once found, select the number at the end of the URL;
 
-## Station Example List #Port à Bateaux
+## Station Example List
 
 - Guy Denielou: https://pouceheure.github.io/panel-bus/?stationID=31500
 - DeLaidde: https://pouceheure.github.io/panel-bus/?stationID=31661
