@@ -1,41 +1,39 @@
-// global variables
-let stationID = 31500 // guy denielou 
-let stationName = "Waiting Connection"
+// Global variables
+let stationID = 31500; // Guy Denielou
+let stationName = "Waiting Connection";
 let stateIsFirstLoad = true;
 let versionApp = "1.0.0";
 let previousData = null;
 
-const autoRefreshDefault = true; 
-const intervalTimeRefresh = 10 * 1000 // ms
+const autoRefreshDefault = true;
+const intervalTimeRefresh = 10 * 1000; // milliseconds
 
-// events
-
+// Events
 document.addEventListener('DOMContentLoaded', function() {
     const newStationID = getStationIDFromURL();
-    if(newStationID){
-        stationID = newStationID
+    if (newStationID) {
+        stationID = newStationID;
     }
     fetchAndDisplayBusSchedule();
 
     document.getElementById('autoRefreshCheckbox').checked = autoRefreshDefault;
-    toggleAutoRefresh(autoRefreshDefault)
+    toggleAutoRefresh(autoRefreshDefault);
     document.getElementById('autoRefreshCheckbox').addEventListener('change', function() {
         toggleAutoRefresh(this.checked);
     });
 
     document.getElementById('versionNumber').textContent = versionApp;
- });
+});
 
-
-
+// Retrieve station ID from URL
 function getStationIDFromURL() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('stationID'); // index.html?stationID=31500
+    return params.get('stationID');
 }
-
 
 let autoRefreshInterval = null;
 
+// Toggle the auto-refresh state
 function toggleAutoRefresh(isEnabled) {
     if (isEnabled) {
         if (!autoRefreshInterval) {
@@ -48,43 +46,43 @@ function toggleAutoRefresh(isEnabled) {
     }
 }
 
-function updateDateAndNameStation(){
-    document.getElementById('currentTime').textContent = `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} - ${stationName}`;
+// Update the date and station name in the UI
+function updateDateAndNameStation() {
+    document.getElementById('currentTime').textContent = `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'})} - ${stationName}`;
 }
 
-function bodyIsEmpty(elementId){
+// Check if a body element is empty
+function bodyIsEmpty(elementId) {
     const element = document.getElementById(elementId);
-    return element && element.textContent.trim() === ''
+    return element && element.textContent.trim() === '';
 }
 
-function isServiceTime(time){
-    return time > 5 && time < 22
+// Determine if it is service time
+function isServiceTime(time) {
+    return time > 5 && time < 22;
 }
 
-
+// Fetch and display bus schedule
 function fetchAndDisplayBusSchedule() {
     const now = new Date();
     const currentHour = now.getHours();
     const isOnTime = isServiceTime(currentHour);
-    if(!isOnTime){
-        stationName = "Service Off"
-    }else{
+    if (!isOnTime) {
+        stationName = "Service Off";
+    } else {
         fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB`)
         .then(response => response.json())
         .then(data => {
             let hasRealTimeData = data && data.length > 0 && data[0].lines.some(line => line.times.some(time => time.realDateTime));
-        
-            // sometimes, the API returns not update information from real time data
+
             if (!hasRealTimeData && !stateIsFirstLoad) {
                 console.log("No real-time data available for this refresh cycle.");
                 data = previousData;
-            }else{
+            } else {
                 updateDateRefresh(new Date());
             }
 
-            // If real-time data is present, proceed with updating the display
             if (data[0].lines && data[0].lines.length > 0) {
-                // Update stationName with the name of the first stop found
                 stationName = data[0].lines[0].stop.name;
                 updateDateAndNameStation();
             }
@@ -94,24 +92,23 @@ function fetchAndDisplayBusSchedule() {
             previousData = data;
         })
         .catch(error => {
-            console.error('Error fetching data:', error)
+            console.error('Error fetching data:', error);
         });
     }
     updateDateAndNameStation();
 }
 
-function updateDateAndNameStation(){
-    document.getElementById('currentTime').textContent = `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} - ${stationName}`;
+// Clear HTML content of a container
+function clearContainer(container) {
+    container.innerHTML = '';
 }
 
-function clearContainer(container){
-    container.innerHTML = ''; 
+// Update the refresh date display
+function updateDateRefresh(date) {
+    document.getElementById('updateDate').textContent = `(Sync: ${date.toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit', second: '2-digit'})})`;
 }
 
-function updateDateRefresh(date){
-    document.getElementById('updateDate').textContent = `(Sync: ${date.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit', second:'2-digit'})})`;
-}
-
+// Display the bus schedule in the UI
 const displayBusSchedule = (busData) => {
     const now = new Date();
     const container = document.getElementById('busInfo');
@@ -131,7 +128,7 @@ const displayBusSchedule = (busData) => {
                 lineNumber.textContent = line.line.number;
                 const labelDirection = line.direction.name.split("/")[0].trim();
                 
-                size = 40 - line.line.number.length;
+                let size = 40 - line.line.number.length;
                 lineNumber.style.fontSize = `${size}px`;
                 
                 lineTitle.appendChild(lineNumber);
@@ -151,13 +148,7 @@ const displayBusSchedule = (busData) => {
                     
                     const timeElement = document.createElement('p');
                     timeElement.classList.add('time-info');
-
-                    if (diff < 1) {
-                        timeElement.textContent = "< 1 min";
-                    } else {
-                        timeElement.textContent = `${Math.round(diff)} min`;
-                    }
-                    // timeElement.textContent += ` ( ${time.timeDifference})`
+                    timeElement.textContent = diff < 1 ? "< 1 min" : `${Math.round(diff)} min`;
                     timeElement.classList.add(time.realDateTime ? 'real-time' : 'scheduled-time');
 
                     directionContainer.appendChild(timeElement);
@@ -168,4 +159,3 @@ const displayBusSchedule = (busData) => {
         }
     });
 };
-
