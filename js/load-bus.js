@@ -1,4 +1,4 @@
-// by default
+// global variables
 let stationID = 31500 // guy denielou 
 let stationName = "Waiting Connection"
 let stateIsFirstLoad = true;
@@ -7,6 +7,7 @@ let previousData = null;
 
 const autoRefreshDefault = true; 
 const intervalTimeRefresh = 10 * 1000 // ms
+
 // events
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -77,6 +78,8 @@ function fetchAndDisplayBusSchedule() {
             if (!hasRealTimeData && !stateIsFirstLoad) {
                 console.log("No real-time data available for this refresh cycle.");
                 data = previousData;
+            }else{
+                updateDateRefresh(new Date());
             }
 
             // If real-time data is present, proceed with updating the display
@@ -154,7 +157,7 @@ const displayBusSchedule = (busData) => {
                     } else {
                         timeElement.textContent = `${Math.round(diff)} min`;
                     }
-
+                    // timeElement.textContent += ` ( ${time.timeDifference})`
                     timeElement.classList.add(time.realDateTime ? 'real-time' : 'scheduled-time');
 
                     directionContainer.appendChild(timeElement);
@@ -164,6 +167,5 @@ const displayBusSchedule = (busData) => {
             });
         }
     });
-    updateDateRefresh(now);
 };
 
