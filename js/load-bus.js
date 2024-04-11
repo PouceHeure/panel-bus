@@ -3,6 +3,7 @@ let stationID = 31500 // guy denielou
 let stationName = "Waiting Connection"
 let stateIsFirstLoad = true;
 let versionApp = "1.0.0";
+let previousData = null;
 
 const autoRefreshDefault = true; 
 const intervalTimeRefresh = 10 * 1000 // ms
@@ -75,8 +76,7 @@ function fetchAndDisplayBusSchedule() {
             // sometimes, the API returns not update information from real time data
             if (!hasRealTimeData && !stateIsFirstLoad) {
                 console.log("No real-time data available for this refresh cycle.");
-                // Skip this refresh cycle but keep the auto-refresh active
-                return;
+                data = previousData;
             }
 
             // If real-time data is present, proceed with updating the display
@@ -88,6 +88,7 @@ function fetchAndDisplayBusSchedule() {
 
             displayBusSchedule(data);
             stateIsFirstLoad = false;
+            previousData = data;
         })
         .catch(error => {
             console.error('Error fetching data:', error)
@@ -121,15 +122,24 @@ const displayBusSchedule = (busData) => {
                 const lineTitle = document.createElement('div');
                 lineTitle.classList.add('line-title');
                 lineTitle.style.backgroundColor = `#${line.line.color}`;
+
+                const lineNumber = document.createElement('span');
+                lineNumber.classList.add('line-number');
+                lineNumber.textContent = line.line.number;
                 const labelDirection = line.direction.name.split("/")[0].trim();
-                lineTitle.innerHTML = `${line.line.number} <span class='direction-title'>${labelDirection}</span>`;
+                
+                size = 40 - line.line.number.length;
+                lineNumber.style.fontSize = `${size}px`;
+                
+                lineTitle.appendChild(lineNumber);
+                lineTitle.innerHTML += `<span class='direction-title'> ${labelDirection}</span>`;
                 lineContainer.appendChild(lineTitle);
 
                 const directionContainer = document.createElement('div');
                 directionContainer.classList.add('direction-container');
                 lineContainer.appendChild(directionContainer);
 
-                const futureTimes = line.times.filter(time => new Date(time.realDateTime || time.dateTime) > new Date())
+                const futureTimes = line.times.filter(time => new Date(time.realDateTime || time.dateTime) > now)
                     .sort((a, b) => new Date(a.realDateTime || a.dateTime) - new Date(b.realDateTime || b.dateTime));
 
                 futureTimes.forEach((time, index) => {
@@ -156,3 +166,4 @@ const displayBusSchedule = (busData) => {
     });
     updateDateRefresh(now);
 };
+
