@@ -16,6 +16,8 @@ https://pouceheure.github.io/panel-bus/?stationID=<ID>
   - search the stop there: https://www.oise-mobilite.fr/ - section "Horaires" ;
   - once found, select the number at the end of the URL;
 
+Compiègne Station IDS table -> [here](./doc/station_ids.md);
+
 ## Station Example List
 
 - Guy Denielou: https://pouceheure.github.io/panel-bus/?stationID=31500
