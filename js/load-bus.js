@@ -6,16 +6,6 @@ let versionApp = "1.0.0";
 
 const autoRefreshDefault = true; 
 const intervalTimeRefresh = 10 * 1000 // ms
-const directionMetaNames = { // "line.number": {"direction.id": <label>}  
-    "1": { "1": "Hôpital", "2": "Gare" },
-    "2": { "1": "Clairoix", "2": "Venette" },
-    "3": { "1": "Belin", "2": "Gare" },
-    "4": { "1": "Gare", "2": "Venette" },
-    "5": { "1": "Hôpital", "2": "Gare" },
-    "6": { "1": "Venette", "2": "Gare" },
-    "ARC Express": { "1": "Verberie", "2": "Gare" },
-};
-
 // events
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -68,6 +58,7 @@ function bodyIsEmpty(elementId){
 function isServiceTime(time){
     return time > 5 && time < 22
 }
+
 
 function fetchAndDisplayBusSchedule() {
     const now = new Date();
@@ -130,8 +121,8 @@ const displayBusSchedule = (busData) => {
                 const lineTitle = document.createElement('div');
                 lineTitle.classList.add('line-title');
                 lineTitle.style.backgroundColor = `#${line.line.color}`;
-                const labelDirection = directionMetaNames[line.line.number]?.[line.direction.id] ?? line.direction.name.split("/")[0].trim();
-                lineTitle.innerHTML = `Line ${line.line.number} <span class='direction-title'>${labelDirection}</span>`;
+                const labelDirection = line.direction.name.split("/")[0].trim();
+                lineTitle.innerHTML = `${line.line.number} <span class='direction-title'>${labelDirection}</span>`;
                 lineContainer.appendChild(lineTitle);
 
                 const directionContainer = document.createElement('div');

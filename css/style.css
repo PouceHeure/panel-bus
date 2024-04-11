@@ -47,23 +47,33 @@ input[type='checkbox'] {
 .bus-container {
     flex: 1;
     min-width: 300px;
-    background-color: #f0f0f0;
+    background-color: #fff;
     color: #000;
     border-radius: 8px;
     box-shadow: 4px 4px 4px rgba(0,0,0,0.1);
     overflow: hidden;
 }
+
 .line-title {
+    display: flex; /* Utilise Flexbox pour aligner les éléments */
+    align-items: center; /* Centre les éléments verticalement */
     padding: 10px 15px;
-    font-size: 25px;
+    font-size: 40px;
     color: #fff;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
+    text-align: left;
+    min-height: 60px; /* Hauteur minimale pour assurer une cohérence entre toutes les barres */
 }
+
+
 .direction-title {
-    font-size: 20px;
+    font-size: 18px;
+    text-align: right;
 }
+
+
 .direction-container {
     padding: 10px 15px;
     font-size: 25px;
@@ -128,3 +138,5 @@ input[type='checkbox'] {
 #currentLink:hover {
     text-decoration: underline; /* Ajoute un soulignement au survol pour une meilleure accessibilité */
 }
+
+
