@@ -3,3 +3,9 @@ example/*.json
 
 # v2
 *v2.*
+
+# scripts
+scripts/
+
+# mac file
+.DS_Store

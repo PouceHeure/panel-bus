@@ -2,8 +2,9 @@
 let stationID = 31500; // Guy Denielou
 let stationName = "Waiting Connection";
 let stateIsFirstLoad = true;
-let versionApp = "1.0.0";
+let versionApp = "1.0.1";
 let previousData = null;
+let autoRefreshInterval = null;
 
 const autoRefreshDefault = true;
 const intervalTimeRefresh = 10 * 1000; // milliseconds
@@ -31,13 +32,11 @@ function getStationIDFromURL() {
     return params.get('stationID');
 }
 
-let autoRefreshInterval = null;
 
 // Toggle the auto-refresh state
 function toggleAutoRefresh(isEnabled) {
     if (isEnabled) {
         if (!autoRefreshInterval) {
-            fetchAndDisplayBusSchedule();
             autoRefreshInterval = setInterval(fetchAndDisplayBusSchedule, intervalTimeRefresh);
         }
     } else {
@@ -48,7 +47,9 @@ function toggleAutoRefresh(isEnabled) {
 
 // Update the date and station name in the UI
 function updateDateAndNameStation() {
-    document.getElementById('currentTime').textContent = `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'})} - ${stationName}`;
+    const title =  `${new Date().toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'})} - ${stationName}`;
+    document.getElementById('currentTime').textContent = title;
+    document.title = `Bus: ${stationName}`;
 }
 
 // Check if a body element is empty
@@ -65,14 +66,19 @@ function isServiceTime(time) {
 // Fetch and display bus schedule
 function fetchAndDisplayBusSchedule() {
     const now = new Date();
-    const currentHour = now.getHours();
-    const isOnTime = isServiceTime(currentHour);
-    if (!isOnTime) {
-        stationName = "Service Off";
-    } else {
-        fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB`)
-        .then(response => response.json())
-        .then(data => {
+    // const currentHour = now.getHours();
+    let serviceIsOFF = false; //!isServiceTime(currentHour);
+    fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB`)
+    .then(response => {
+            if(response.status === 204){
+                serviceIsOFF = true;
+                return {};
+            }
+            return response.json()
+        }
+    )
+    .then(data => {
+        if(!serviceIsOFF){
             let hasRealTimeData = data && data.length > 0 && data[0].lines.some(line => line.times.some(time => time.realDateTime));
 
             if (!hasRealTimeData && !stateIsFirstLoad) {
@@ -84,18 +90,22 @@ function fetchAndDisplayBusSchedule() {
 
             if (data[0].lines && data[0].lines.length > 0) {
                 stationName = data[0].lines[0].stop.name;
-                updateDateAndNameStation();
+                // updateDateAndNameStation();
             }
-
             displayBusSchedule(data);
             stateIsFirstLoad = false;
             previousData = data;
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
+        }else{
+            clearContainer(document.getElementById('busInfo'));
+            stationName = "Service Off";
+        }
+        updateDateAndNameStation();
     }
-    updateDateAndNameStation();
+    )
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+    
 }
 
 // Clear HTML content of a container
