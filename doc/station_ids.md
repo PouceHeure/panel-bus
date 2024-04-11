@@ -1,3 +1,5 @@
+(Result applying the following get: https://api.oisemob.cityway.fr/search/all?keywords=Compiègne&maxitems=200&objectTypes=1;2;3&includedPoiCategories=3)
+
 | Nom de la Station            | ID     |
 |------------------------------|--------|
 | Compiègne                     | 1926   |
