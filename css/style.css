@@ -9,13 +9,31 @@ body, html {
     font-size: 50px;
     font-weight: bold;
 }
+
+#version, #versionNumber{
+    text-align: center;
+}   
+
+#updateDate{
+    padding-left:5px;
+    font-size: 16px;
+}
+
+input[type='checkbox'] {
+    width:30px;
+    height:30px;
+    background:white;
+    border-radius:5px;
+    border:2px solid #555;
+}
+
+
 #legend {
     font-size: 18px;
     font-weight: normal;
-    text-align: left;
+    text-align: center;
 }
 #legend span {
-    font-size: 16px;
     padding-left: 5px;
 }
 
