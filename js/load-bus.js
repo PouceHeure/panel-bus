@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('versionNumber').textContent = versionApp;
+
+    updateDateAndNameStation();
 });
 
 // Retrieve station ID from URL
@@ -65,9 +67,7 @@ function isServiceTime(time) {
 
 // Fetch and display bus schedule
 function fetchAndDisplayBusSchedule() {
-    const now = new Date();
-    // const currentHour = now.getHours();
-    let serviceIsOFF = false; //!isServiceTime(currentHour);
+    let serviceIsOFF = false;
     fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB`)
     .then(response => {
             if(response.status === 204){
