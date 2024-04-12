@@ -110,7 +110,8 @@ input[type='checkbox'] {
     display: flex;
     justify-content: space-between; /* Écarte les enfants aux extrémités du conteneur */
     align-items: center; /* Centre les enfants verticalement */
-    padding: 2px; /* Ajoute un peu d'espace autour du conteneur */
+    padding-left: 15px; /* Ajoute un peu d'espace autour du conteneur */
+    padding-right: 15px;
     flex-wrap: wrap; /* Permet aux éléments de passer à la ligne en dessous si l'espace est insuffisant */
     font-size: 20px;
 }
@@ -129,9 +130,6 @@ input[type='checkbox'] {
     align-items: center; /* Assure que la checkbox et le label sont alignés verticalement */
 }
 
-/* #pageLink {
-    margin-top: 20px; /* Ajoute un espace au-dessus du lien */
-} */
 
 #currentLink {
     color: #007bff; /* Couleur bleue pour le lien, par exemple */
