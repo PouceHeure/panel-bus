@@ -68,7 +68,7 @@ function isServiceTime(time) {
 // Fetch and display bus schedule
 function fetchAndDisplayBusSchedule() {
     let serviceIsOFF = false;
-    fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=&userId=TSI_OISEMOB`)
+    fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=`)
     .then(response => {
             if(response.status === 204){
                 serviceIsOFF = true;
