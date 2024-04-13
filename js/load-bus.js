@@ -8,7 +8,8 @@ let lastUpdateData = null;
 let lastUpdateTime = null;
 // auto refresh
 const autoRefreshDefault = true;
-const intervalTimeRefresh = 10 * 1000; // milliseconds
+const intervalTimeRefreshRequest = 10 * 1000; // milliseconds
+const intervalTimeRefreshDate = 1 * 1000; // milliseconds (only if no data refresh)
 let autoRefreshInterval = null;
 const timeOutForceRefresh = 2; // minutes
 
@@ -27,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('versionNumber').textContent = versionApp;
-
     updateDateAndNameStation();
 });
 
@@ -42,9 +42,10 @@ function getStationIDFromURL() {
 function toggleAutoRefresh(isEnabled) {
     if (isEnabled) {
         if (!autoRefreshInterval) {
-            autoRefreshInterval = setInterval(fetchAndDisplayBusSchedule, intervalTimeRefresh);
+            autoRefreshInterval = setInterval(fetchAndDisplayBusSchedule, intervalTimeRefreshRequest);
         }
     } else {
+        setInterval(updateDateAndNameStation, intervalTimeRefreshDate);
         clearInterval(autoRefreshInterval);
         autoRefreshInterval = null;
     }
@@ -99,7 +100,7 @@ function fetchAndDisplayBusSchedule() {
                 console.log("No real-time data available for this refresh cycle.");
                 data = lastUpdateData;
             }
-
+            
             if (data[0].lines && data[0].lines.length > 0) {
                 stationName = data[0].lines[0].stop.name;
             }
@@ -114,7 +115,6 @@ function fetchAndDisplayBusSchedule() {
     .catch(error => {
         console.error('Error fetching data:', error);
     });
-    
 }
 
 // Clear HTML content of a container
