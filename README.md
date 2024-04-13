@@ -24,3 +24,4 @@ Compiègne Station IDS table -> [here](./doc/station_ids.md);
 - DeLaidde: https://pouceheure.github.io/panel-bus/?stationID=31661
 - Roger Couttolenc: https://pouceheure.github.io/panel-bus/?stationID=31608
 - Port à Bateaux: https://pouceheure.github.io/panel-bus/?stationID=31706
+- Centre Culturel: https://pouceheure.github.io/panel-bus/?stationID=31587
