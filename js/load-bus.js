@@ -83,12 +83,14 @@ function fetchAndDisplayBusSchedule() {
     .then(data => {
         if(!serviceIsOFF){
             const now = new Date();
+            // check it's necessary to update
+            const dataEmpty = data.length == 0;
             const hasRealTimeData = data && data.length > 0 
                                  && data[0].lines.some(line => line.times.some(time => time.realDateTime));
             const stateIsFirstLoad = lastUpdateTime == null;
             const updateIsTooOld = stateIsFirstLoad || getDiffTimeMinutes(lastUpdateTime,now) > timeOutForceRefresh;
-            const okToUpdateData = hasRealTimeData || updateIsTooOld;
-      
+            const okToUpdateData = !dataEmpty && (hasRealTimeData || updateIsTooOld);
+            // update data
             if(okToUpdateData) {
                 updateDateRefresh(now);
                 lastUpdateTime = now;
