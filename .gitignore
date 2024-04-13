@@ -1,5 +1,5 @@
-# example
-example/*.json
+# debug
+debug/
 
 # v2
 *v2.*
