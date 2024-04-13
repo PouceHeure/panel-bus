@@ -1,13 +1,16 @@
 // Global variables
+const versionApp = "1.0.2";
+// station info
 let stationID = 31500; // Guy Denielou
 let stationName = "Waiting Connection";
-let stateIsFirstLoad = true;
-let versionApp = "1.0.1";
-let previousData = null;
-let autoRefreshInterval = null;
-
+// last update info
+let lastUpdateData = null;
+let lastUpdateTime = null;
+// auto refresh
 const autoRefreshDefault = true;
 const intervalTimeRefresh = 10 * 1000; // milliseconds
+let autoRefreshInterval = null;
+const timeOutForceRefresh = 2; // minutes
 
 // Events
 document.addEventListener('DOMContentLoaded', function() {
@@ -79,22 +82,26 @@ function fetchAndDisplayBusSchedule() {
     )
     .then(data => {
         if(!serviceIsOFF){
-            let hasRealTimeData = data && data.length > 0 && data[0].lines.some(line => line.times.some(time => time.realDateTime));
-
-            if (!hasRealTimeData && !stateIsFirstLoad) {
+            const now = new Date();
+            const hasRealTimeData = data && data.length > 0 
+                                 && data[0].lines.some(line => line.times.some(time => time.realDateTime));
+            const stateIsFirstLoad = lastUpdateTime == null;
+            const updateIsTooOld = stateIsFirstLoad || getDiffTimeMinutes(lastUpdateTime,now) > timeOutForceRefresh;
+            const okToUpdateData = hasRealTimeData || updateIsTooOld;
+      
+            if(okToUpdateData) {
+                updateDateRefresh(now);
+                lastUpdateTime = now;
+                lastUpdateData = data;
+            }else{
                 console.log("No real-time data available for this refresh cycle.");
-                data = previousData;
-            } else {
-                updateDateRefresh(new Date());
+                data = lastUpdateData;
             }
 
             if (data[0].lines && data[0].lines.length > 0) {
                 stationName = data[0].lines[0].stop.name;
-                // updateDateAndNameStation();
             }
             displayBusSchedule(data);
-            stateIsFirstLoad = false;
-            previousData = data;
         }else{
             clearContainer(document.getElementById('busInfo'));
             stationName = "Service Off";
@@ -116,6 +123,11 @@ function clearContainer(container) {
 // Update the refresh date display
 function updateDateRefresh(date) {
     document.getElementById('updateDate').textContent = `(Sync: ${date.toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit', second: '2-digit'})})`;
+}
+
+// Get time difference in minutes between 2 Date
+function getDiffTimeMinutes(tA, tB){
+    return (tA - tB) / 60000;
 }
 
 // Display the bus schedule in the UI
@@ -154,7 +166,7 @@ const displayBusSchedule = (busData) => {
 
                 futureTimes.forEach((time, index) => {
                     const departTime = new Date(time.realDateTime || time.dateTime);
-                    let diff = (departTime - now) / 60000;
+                    let diff = getDiffTimeMinutes(departTime, now);
                     
                     const timeElement = document.createElement('p');
                     timeElement.classList.add('time-info');
