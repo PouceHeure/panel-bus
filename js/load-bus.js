@@ -11,7 +11,6 @@ const autoRefreshDefault = true;
 let autoRefreshInterval = null; 
 const intervalTimeRefreshRequest = 10 * 1000; // milliseconds
 const intervalTimeRefreshDate = 10 * 1000; // milliseconds (only if no data refresh)
-const timeOutForceRefresh = 2; // minutes
 // language
 let language = "fr";
 
@@ -151,8 +150,7 @@ function fetchAndDisplayBusSchedule() {
             const hasRealTimeData = data && data.length > 0 
                                  && data[0].lines.some(line => line.times.some(time => time.realDateTime));
             const stateIsFirstLoad = lastUpdateTime == null;
-            const updateIsTooOld = stateIsFirstLoad || getDiffTimeMinutes(lastUpdateTime,now) > timeOutForceRefresh;
-            const okToUpdateData = !dataEmpty && (hasRealTimeData || updateIsTooOld);
+            const okToUpdateData = !dataEmpty && (hasRealTimeData || stateIsFirstLoad);
             // update data
             if(okToUpdateData) {
                 updateDateRefresh(now);
