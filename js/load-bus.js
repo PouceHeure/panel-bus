@@ -9,8 +9,8 @@ let lastUpdateTime = null;
 // auto refresh
 const autoRefreshDefault = true;
 const intervalTimeRefreshRequest = 10 * 1000; // milliseconds
-const intervalTimeRefreshDate = 1 * 1000; // milliseconds (only if no data refresh)
-let autoRefreshInterval = null;
+const intervalTimeRefreshDate = 10 * 1000; // milliseconds (only if no data refresh)
+let autoRefreshInterval = null; 
 const timeOutForceRefresh = 2; // minutes
 
 // Events
@@ -30,6 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('versionNumber').textContent = versionApp;
     updateDateAndNameStation();
 });
+
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.reload(true);
+    }
+});
+
 
 // Retrieve station ID from URL
 function getStationIDFromURL() {
