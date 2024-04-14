@@ -22,7 +22,8 @@ const labels = {
         "realTime": "Real Time",
         "scheduledTime": "Scheduled Time",
         "autoRefresh": "Auto Refresh",
-        "waitingConnection": "Waiting Connection"
+        "waitingConnection": "Waiting Connection",
+        "update": "update"
     },
     "fr": {
         "serviceOFF": "Service Arrêté",
@@ -30,7 +31,8 @@ const labels = {
         "realTime": "Temps Réel",
         "scheduledTime": "Temps Planifié",
         "autoRefresh": "Actualiser",
-        "waitingConnection": "Connexion En Cours"
+        "waitingConnection": "Connexion En Cours",
+        "update": "mise à jour"
     }
 }
 
@@ -184,7 +186,7 @@ function clearContainer(container) {
 
 // Update the refresh date display
 function updateDateRefresh(date) {
-    document.getElementById('updateDate').textContent = `(Sync: ${date.toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit', second: '2-digit'})})`;
+    document.getElementById('updateDate').textContent = `(${getLabel("update")}:${date.toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit', second: '2-digit'})})`;
 }
 
 // Get time difference in minutes between 2 Date
