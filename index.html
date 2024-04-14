@@ -12,23 +12,26 @@
 <body>
     <div id="currentTime"></div>
     
-    <div id="controlsContainer">
+    
+    <div id="autoRefreshOption">
+        <input type="checkbox" id="autoRefreshCheckbox" checked>
+        <label for="autoRefreshCheckbox"></label> 
+        <span id="updateDate"></span>
+    </div>
+        
+
+
+    <div id="busInfo"></div>
+
+    <footer>
+        <div id="controlsContainer">
         <div id="version">
             Version: <span id="versionNumber"></span>
         </div>
         <div id="legend">
         </div>
-        
-        <div id="autoRefreshOption">
-            <input type="checkbox" id="autoRefreshCheckbox" checked>
-            <label for="autoRefreshCheckbox"></label> 
-            <span id="updateDate"></span>
         </div>
-        
-      
-    </div>
-
-    <div id="busInfo"></div>
+    </footer>
 
     <script src="js/load-bus.js"></script>
 

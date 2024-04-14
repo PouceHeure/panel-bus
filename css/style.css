@@ -122,9 +122,18 @@ input[type='checkbox'] {
     font-size: 20px;
 }
 
+
+
 #legend, #autoRefreshOption {
     display: flex;
     align-items: center; /* Centre verticalement les éléments à l'intérieur de chaque div */
+}
+
+#autoRefreshOption {
+    display: flex;            /* Active Flexbox pour cet élément */
+    justify-content: center;  /* Centre les éléments horizontalement */
+    align-items: center;      /* Centre les éléments verticalement */
+    font-size: 20px;
 }
 
 .real-time, .scheduled-time {
@@ -136,7 +145,6 @@ input[type='checkbox'] {
     align-items: center; /* Assure que la checkbox et le label sont alignés verticalement */
 }
 
-
 #currentLink {
     color: #007bff; /* Couleur bleue pour le lien, par exemple */
     text-decoration: none; /* Supprime le soulignement par défaut */
@@ -144,6 +152,17 @@ input[type='checkbox'] {
 
 #currentLink:hover {
     text-decoration: underline; /* Ajoute un soulignement au survol pour une meilleure accessibilité */
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: #333;
+    background-color: #f6f6ee;;
+    text-align: center;
+    padding: 0px 0;
 }
 
 
