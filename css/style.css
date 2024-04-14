@@ -22,11 +22,6 @@ body, html {
     /* font-size: 16px; */
 }
 
-#autoRefreshOption {
-    display: flex;
-    align-items: center; /* Centrer les éléments verticalement */
-    justify-content: start; /* Aligner les éléments à gauche */
-}
 
 #legend {
     font-size: 18px;
@@ -133,7 +128,7 @@ body, html {
 }
 
 #autoRefreshOption {
-    display: flex;
+    display: none;
     justify-content: center;  /* Centre les éléments horizontalement */
     align-items: center;      /* Centre les éléments verticalement */
     font-size: 25px;          /* Définit la taille de la police pour tous les enfants */
