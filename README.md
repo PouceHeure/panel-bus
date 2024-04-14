@@ -25,3 +25,5 @@ Compiègne Station IDS table -> [here](./doc/station_ids.md);
 - Roger Couttolenc: https://pouceheure.github.io/panel-bus/?stationID=31608
 - Port à Bateaux: https://pouceheure.github.io/panel-bus/?stationID=31706
 - Centre Culturel: https://pouceheure.github.io/panel-bus/?stationID=31587
+- Saint Côme Mémorial: https://pouceheure.github.io/panel-bus/?stationID=31657
+- Gare Compiègne: https://pouceheure.github.io/panel-bus/?stationID=41434
