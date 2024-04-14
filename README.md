@@ -9,6 +9,8 @@ Page: https://pouceheure.github.io/panel-bus/
 <URL>/?stationID=<ID>
 # github page
 https://pouceheure.github.io/panel-bus/?stationID=<ID>
+# change language (default = your navigator system language)
+https://pouceheure.github.io/panel-bus/?stationID=<ID>&lang={fr,en}
 ```
 
 - default ID: 31500 (= "Guy Denielou")

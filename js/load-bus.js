@@ -2,24 +2,72 @@
 const versionApp = "1.0.2";
 // station info
 let stationID = 31500; // Guy Denielou
-let stationName = "Waiting Connection";
+let stationName = "";
 // last update info
 let lastUpdateData = null;
 let lastUpdateTime = null;
 // auto refresh
 const autoRefreshDefault = true;
+let autoRefreshInterval = null; 
 const intervalTimeRefreshRequest = 10 * 1000; // milliseconds
 const intervalTimeRefreshDate = 10 * 1000; // milliseconds (only if no data refresh)
-let autoRefreshInterval = null; 
 const timeOutForceRefresh = 2; // minutes
+// language
+let language = "fr";
+
+const labels = {
+    "en": {
+        "serviceOFF": "Service OFF",
+        "legend": "Legend",
+        "realTime": "Real Time",
+        "scheduledTime": "Scheduled Time",
+        "autoRefresh": "Auto Refresh",
+        "waitingConnection": "Waiting Connection"
+    },
+    "fr": {
+        "serviceOFF": "Service Arrêté",
+        "legend": "Légende",
+        "realTime": "Temps Réel",
+        "scheduledTime": "Temps Planifié",
+        "autoRefresh": "Actualiser",
+        "waitingConnection": "Connexion En Cours"
+    }
+}
+
+function getLabel(key){
+   const lang = labels[language] || labels['en'];
+   return lang[key];
+}
+
+function updateHeadText() {
+    const legendContainer = document.getElementById('legend');
+    legendContainer.innerHTML = `
+        ${getLabel("legend")}: 
+        <span class="real-time">${getLabel("realTime")}</span>,
+        <span class="scheduled-time">${getLabel("scheduledTime")}</span>
+    `;
+    const label = document.querySelector('label[for="autoRefreshCheckbox"]');
+    label.textContent = `${getLabel("autoRefresh")}`;
+
+    stationName = getLabel("waitingConnection");
+}
+
 
 // Events
 document.addEventListener('DOMContentLoaded', function() {
-    const newStationID = getStationIDFromURL();
-    if (newStationID) {
-        stationID = newStationID;
+    const paramStationID = getStationIDFromURL();
+    if (paramStationID) {
+        stationID = paramStationID;
     }
     fetchAndDisplayBusSchedule();
+
+    const paramLang = getLangFromURL();
+    if(paramLang){
+        language = paramLang.toLocaleLowerCase();
+    }else{
+        language = navigator.language.split('-')[0];
+    }
+    updateHeadText();
 
     document.getElementById('autoRefreshCheckbox').checked = autoRefreshDefault;
     toggleAutoRefresh(autoRefreshDefault);
@@ -42,6 +90,11 @@ window.addEventListener('pageshow', function(event) {
 function getStationIDFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('stationID');
+}
+
+function getLangFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('lang');
 }
 
 
@@ -114,7 +167,7 @@ function fetchAndDisplayBusSchedule() {
             displayBusSchedule(data);
         }else{
             clearContainer(document.getElementById('busInfo'));
-            stationName = "Service Off";
+            stationName = getLabel("serviceOFF");
         }
         updateDateAndNameStation();
     }
