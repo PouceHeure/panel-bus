@@ -28,10 +28,6 @@ body, html {
     justify-content: start; /* Aligner les éléments à gauche */
 }
 
-
-
-
-
 #legend {
     font-size: 18px;
     font-weight: normal;
@@ -140,15 +136,15 @@ body, html {
     display: flex;
     justify-content: center;  /* Centre les éléments horizontalement */
     align-items: center;      /* Centre les éléments verticalement */
-    font-size: 20px;          /* Définit la taille de la police pour tous les enfants */
+    font-size: 25px;          /* Définit la taille de la police pour tous les enfants */
 }
 
 input[type='checkbox'] {
-    width:20px;
-    height:20px;
+    width: 30px;
+    height: 30px;
     background:white;
     accent-color: #007BFF;
-    border-radius:5px;
+    border-radius: 5px;
     border:2px solid #555;
     transform: scale(1.2);
 }
