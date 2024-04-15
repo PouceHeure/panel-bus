@@ -61,7 +61,7 @@ body, html {
     justify-content: space-between;
     text-align: left;
     min-height: 60px; /* Hauteur minimale pour assurer une cohérence entre toutes les barres */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1.0);
     /* border-bottom: 5px solid #FFF;  */
     /* box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1); */
 }
@@ -128,7 +128,7 @@ body, html {
 }
 
 #autoRefreshOption {
-    display: none;
+    display: flex;
     justify-content: center;  /* Centre les éléments horizontalement */
     align-items: center;      /* Centre les éléments verticalement */
     font-size: 25px;          /* Définit la taille de la police pour tous les enfants */
@@ -141,7 +141,7 @@ input[type='checkbox'] {
     accent-color: #007BFF;
     border-radius: 5px;
     border:2px solid #555;
-    transform: scale(1.2);
+    /* transform: scale(1.2); */
 }
 
 #currentLink {
@@ -164,7 +164,8 @@ footer {
     padding-bottom: 10px;
     padding-left: 10px;
     padding-right: 10px;
+    
 }
 
-
+.clear { clear: both; height: 60px; }
 
