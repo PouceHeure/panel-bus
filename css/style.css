@@ -12,6 +12,17 @@ body, html {
     font-weight: bold;
 }
 
+#currentTime {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f6f6ee; /* ou toute autre couleur de fond */
+    z-index: 1000; /* s'assure qu'il reste au-dessus des autres éléments */
+    padding: 5px 0; /* ajoute un peu d'espace autour du texte */
+    text-align: center; /* centre le texte dans le div */
+}
+
 #legend{
     font-size: 20px;
 }
