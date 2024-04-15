@@ -6,25 +6,26 @@ body, html {
 }
 
 #currentTime, #legend {
-    padding: 10px;
+    
     text-align: center;
     font-size: 50px;
     font-weight: bold;
 }
 
-#currentTime {
+#topBar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #f6f6ee; /* ou toute autre couleur de fond */
+    background-color: #f6f6eeEE; /* ou toute autre couleur de fond */
     z-index: 1000; /* s'assure qu'il reste au-dessus des autres éléments */
-    padding: 5px 0; /* ajoute un peu d'espace autour du texte */
+    /*padding: 5px 0;  ajoute un peu d'espace autour du texte */
+    padding: 10px;
     text-align: center; /* centre le texte dans le div */
 }
 
 #legend{
-    font-size: 20px;
+    font-size: 18px;
 }
 
 
@@ -167,11 +168,11 @@ footer {
     bottom: 0;
     width: 100%;
     color: #333;
-    background-color: #f6f6ee;
+    background-color: #f6f6eeEE;
     text-align: center;
     padding-bottom: 10px;
     padding-top: 10px;
 }
 
-.clear { clear: both; height: 60px; }
+.clear { clear: both; height: 100px; }
 
