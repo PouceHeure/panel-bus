@@ -103,10 +103,10 @@ window.addEventListener('pageshow', function (event) {
 })
 
 window.addEventListener('resize', function () {
-//   if (busApp != null) {
-//     busApp.elementDrawer.getHTMLElements()
-//     busApp.draw()
-//   }
+  if (busApp != null) {
+    busApp.elementDrawer.getHTMLElements()
+    busApp.draw()
+  }
 })
 
 window.addEventListener('beforeunload', function () {
