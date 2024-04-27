@@ -1,5 +1,5 @@
 // Global variables
-const versionApp = '1.0.3'
+const versionApp = '1.1.0'
 // station info
 let stationID = 31500 // Guy Denielou
 let stationName = ''
