@@ -358,7 +358,7 @@ class LineBusApp {
     this.ws = new WebSocket(url)
 
     this.ws.onopen = () => {
-      console.log('WebSocket connection established')
+      // console.log('WebSocket connection established')
       this.sendInitialMessages(this.ws)
     }
 
@@ -398,11 +398,11 @@ class LineBusApp {
     }
 
     this.ws.onerror = error => {
-      console.log('WebSocket Error:', error)
+      // console.log('WebSocket Error:', error)
     }
 
     this.ws.onclose = event => {
-      console.log('WebSocket connection closed:', event.code, event.reason)
+      // console.log('WebSocket connection closed:', event.code, event.reason)
       // this.ws.close();
 
       this.ws.onclose = null
@@ -433,7 +433,7 @@ class LineBusApp {
         const wsConnectionUrl = `${LineBusApp.BASE_URL_VEHICLE}?id=${data.connectionToken}`
         // Proceed to open WebSocket connection
         this.openWebSocket(wsConnectionUrl)
-        console.log('Received connectionToken:', data.connectionToken)
+        // console.log('Received connectionToken:', data.connectionToken)
         // Use the connectionToken to open WebSocket or other operations
       })
       .catch(error => {
