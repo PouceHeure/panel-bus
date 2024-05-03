@@ -94,7 +94,15 @@ document.addEventListener('DOMContentLoaded', function () {
   if (paramTrack) {
     trackMode = paramTrack.toLowerCase() == 'true'
   }
+
+//   setInterval(drawBus, 1000)
 })
+
+function drawBus(){
+    if(busApp != null && busApp.isConnected()){
+        busApp.draw()
+    }
+}
 
 window.addEventListener('pageshow', function (event) {
   if (event.persisted) {

@@ -42,11 +42,15 @@ class Bus extends Element {
     this.OldBus = []
   }
 
-  updateGps (position_gps) {
+  updateGps (position_gps, date = null) {
     const newPosition = !GPS.equal(this.position_gps, position_gps)
     if (newPosition) {
       this.position_gps = position_gps
-      this.date = new Date()
+      if(date == null){
+        this.date = new Date()
+      }else{
+        this.date = date
+      }
     }
     return newPosition
   }
@@ -305,6 +309,10 @@ class LineBusApp {
     })
   }
 
+  isConnected(){
+    return this.statutConnection ==  StatusConnection.CONNECTED;
+  }
+
   setupDraw () {
     let stationStartIndex = this.stationGoalIndex - this.numberStations
     if (stationStartIndex < 0) {
@@ -363,12 +371,13 @@ class LineBusApp {
     }
 
     this.ws.onmessage = message => {
-      // console.log(message.data)
       if (message.data == null) {
+        console.log(message)
+        this.statutConnection = StatusConnection.NO_CONNECTED
         return
       }
       const data = this.processReceivedData(message.data)
-      // console.log(message);
+      
       const getGps = data != null && (data.Latitude ?? null) != null
       if (getGps) {
         this.statutConnection = StatusConnection.CONNECTED
@@ -383,7 +392,7 @@ class LineBusApp {
 
         const bus = this.busList[indexBus];
         const busGps = new GPS(data.Latitude, data.Longitude);
-        const isNewPosition = bus.updateGps(busGps);
+        const isNewPosition = bus.updateGps(busGps,new Date(data.RecordedAtTime));
         if (isNewPosition) {
           bus.position_x = this.computeDistanceXFromOrigin(bus);
           bus.position_x_goal = this.computeDistanceToGoal(bus);
@@ -393,27 +402,24 @@ class LineBusApp {
           this.draw()
         }
       } else {
-        this.statutConnection = StatusConnection.NO_CONNECTED
+        
       }
     }
 
     this.ws.onerror = error => {
-      // console.log('WebSocket Error:', error)
+      console.log('WebSocket Error:', error)
+      this.statutConnection = StatusConnection.NO_CONNECTED
     }
 
     this.ws.onclose = event => {
-      // console.log('WebSocket connection closed:', event.code, event.reason)
-      // this.ws.close();
-
-      this.ws.onclose = null
-      this.ws.onmessage = null
-      this.ws.onerror = null
+      console.log('WebSocket connection closed:', event.code, event.reason)
     }
   }
 
+
   shutdown () {
     if (this.ws != null) {
-      this.ws.close()
+      this.ws.close();
     }
   }
 
@@ -698,7 +704,9 @@ class DrawBus extends Draw {
             Math.trunc(this.bus.position_x_goal / 10) / 100
           } km`
         }
-        const label = `${dateToStringHHMM(this.bus.date)} - ${labelDistance}`
+        
+        // const label = `${Math.round((new Date() - this.bus.date)/1000)}s - ${labelDistance}`
+        const label = `${dateToStringHHMMSS(this.bus.date)} - ${labelDistance}`
         ctx.fillStyle = 'black'
         const widthLabel = ctx.measureText(label).width
         ctx.fillText(
