@@ -1,5 +1,5 @@
 // Global constants / variables
-const versionApp = "2.0.0"
+const versionApp = '2.0.0'
 let stationID = 31500 // Default station
 let stationName = ''
 let lastUpdateData = null
@@ -72,12 +72,13 @@ document.addEventListener('DOMContentLoaded', function () {
   fetchAndDisplayBusSchedule()
 
   const paramLang = getLangFromURL()
-  language = paramLang ? paramLang.toLowerCase() : navigator.language.split('-')[0]
+  language = paramLang
+    ? paramLang.toLowerCase()
+    : navigator.language.split('-')[0]
 
   updateHeadText()
 
-
-  toggleAutoRefresh(true);
+  toggleAutoRefresh(true)
   // document.getElementById('autoRefreshCheckbox').checked = autoRefreshDefault
   // toggleAutoRefresh(autoRefreshDefault)
   // document.getElementById('autoRefreshCheckbox')
@@ -86,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
   //   })
 
   document.getElementById('versionNumber').textContent = versionApp
-  console.log(versionApp);
+  console.log(versionApp)
   updateDateAndNameStation()
 
   const paramTrack = getTrackMode()
@@ -99,25 +100,38 @@ function drawBus () {
 }
 
 // Page events
-window.addEventListener('pageshow', e => { if (e.persisted) window.location.reload(true) })
+window.addEventListener('pageshow', e => {
+  if (e.persisted) window.location.reload(true)
+})
 window.addEventListener('resize', () => {
   if (busApp != null) {
     busApp.elementDrawer.getHTMLElements()
     busApp.draw()
   }
 })
-window.addEventListener('beforeunload', () => { if (busApp != null) busApp.shutdown() })
+window.addEventListener('beforeunload', () => {
+  if (busApp != null) busApp.shutdown()
+})
 
 // Helpers: read URL params
-function getStationIDFromURL () { return new URLSearchParams(window.location.search).get('stationID') }
-function getLangFromURL () { return new URLSearchParams(window.location.search).get('lang') }
-function getTrackMode () { return new URLSearchParams(window.location.search).get('track') }
+function getStationIDFromURL () {
+  return new URLSearchParams(window.location.search).get('stationID')
+}
+function getLangFromURL () {
+  return new URLSearchParams(window.location.search).get('lang')
+}
+function getTrackMode () {
+  return new URLSearchParams(window.location.search).get('track')
+}
 
 // Toggle auto-refresh
 function toggleAutoRefresh (isEnabled) {
   if (isEnabled) {
     if (!autoRefreshInterval) {
-      autoRefreshInterval = setInterval(fetchAndDisplayBusSchedule, intervalTimeRefreshRequest)
+      autoRefreshInterval = setInterval(
+        fetchAndDisplayBusSchedule,
+        intervalTimeRefreshRequest
+      )
     }
   } else {
     setInterval(updateDateAndNameStation, intervalTimeRefreshDate)
@@ -137,27 +151,57 @@ function updateDateAndNameStation () {
 }
 
 // Misc helpers
-function bodyIsEmpty (id) { return document.getElementById(id)?.textContent.trim() === '' }
-function isServiceTime (h) { return h > 5 && h < 22 }
-function clearContainer (el) { el.innerHTML = '' }
-function dateToStringHHMMSS (d) { return d.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }
-function dateToStringHHMM (d) { return d.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }) }
-function updateDateRefresh (d) { document.getElementById('updateDate').textContent = `${getLabel('update')}: ${dateToStringHHMMSS(d)}` }
-function getDiffTimeMinutes (a, b) { return (a - b) / 60000 }
+function bodyIsEmpty (id) {
+  return document.getElementById(id)?.textContent.trim() === ''
+}
+function isServiceTime (h) {
+  return h > 5 && h < 22
+}
+function clearContainer (el) {
+  el.innerHTML = ''
+}
+function dateToStringHHMMSS (d) {
+  return d.toLocaleTimeString(navigator.language, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+function dateToStringHHMM (d) {
+  return d.toLocaleTimeString(navigator.language, {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+function updateDateRefresh (d) {
+  document.getElementById('updateDate').textContent = `${getLabel(
+    'update'
+  )}: ${dateToStringHHMMSS(d)}`
+}
+function getDiffTimeMinutes (a, b) {
+  return (a - b) / 60000
+}
 
 // Fetch and render schedule
 function fetchAndDisplayBusSchedule () {
   let serviceIsOFF = false
-  fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=`)
+  fetch(
+    `https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=`
+  )
     .then(res => {
-      if (res.status === 204) { serviceIsOFF = true; return {} }
+      if (res.status === 204) {
+        serviceIsOFF = true
+        return {}
+      }
       return res.json()
     })
     .then(data => {
       if (!serviceIsOFF) {
         const now = new Date()
         const empty = data.length === 0
-        const hasRealTime = data?.[0]?.lines.some(l => l.times.some(t => t.realDateTime))
+        const hasRealTime = data?.[0]?.lines.some(l =>
+          l.times.some(t => t.realDateTime)
+        )
         const firstLoad = lastUpdateTime == null
         const updateOK = !empty && (hasRealTime || firstLoad)
 
@@ -184,13 +228,20 @@ function fetchAndDisplayBusSchedule () {
 }
 
 // Render bus schedule cards
-const displayBusSchedule = (busData) => {
+const displayBusSchedule = busData => {
   const now = new Date()
   const container = document.getElementById('busInfo')
   clearContainer(container)
 
   const row = document.createElement('div')
-  row.classList.add('row', 'g-3')
+  row.classList.add(
+    'row',
+    'g-3',
+    'row-cols-2',
+    'row-cols-lg-3',
+    'row-cols-xxl-4'
+  )
+
   container.appendChild(row)
 
   busData.forEach(transport => {
@@ -199,39 +250,64 @@ const displayBusSchedule = (busData) => {
     transport.lines.forEach(line => {
       // Col
       const col = document.createElement('div')
-      col.classList.add('col-12', 'col-md-6', 'col-lg-4', 'col-xxl-3')
+      col.classList.add('col')
       row.appendChild(col)
 
       // Card
       const card = document.createElement('div')
-      card.classList.add('card', 'shadow-sm', 'h-100', 'bus-card', 'transition-soft')
+      card.classList.add(
+        'card',
+        'shadow',
+        'h-100',
+        'bus-card',
+        'transition-soft'
+      )
       col.appendChild(card)
 
       // Header
       const color = `#${String(line.line.color || '').replace(/^#/, '')}`
       const header = document.createElement('div')
-      header.classList.add('card-header', 'text-white', 'bus-card-header', 'd-flex', 'align-items-center')
+      header.classList.add(
+        'card-header',
+        'text-white',
+        'bus-card-header',
+        'd-flex',
+        'align-items-center'
+      )
       header.style.setProperty('--line-color', color)
 
       const headerWrap = document.createElement('div')
-      headerWrap.classList.add('d-flex', 'align-items-center', 'justify-content-between', 'w-100', 'bus-card-header-title')
+      // headerWrap.classList.add('d-flex', 'align-items-center', 'justify-content-between', 'w-100', 'bus-card-header-title','badge')
+      headerWrap.classList.add(
+        'd-flex',
+        'align-items-center',
+        'justify-content-between',
+        'w-100',
+        'bus-card-header-title'
+      )
 
       const left = document.createElement('div')
       left.classList.add('d-flex', 'align-items-center', 'gap-2')
 
-      const badgeLine = document.createElement('span')
-      badgeLine.classList.add('badge', 'rounded-pill', 'bg-dark', 'bg-opacity-50', 'fs-6')
+      const badgeLine = document.createElement('span', 'fw-bold')
+      badgeLine.classList.add(
+        'badge',
+        'rounded-pill',
+        'bg-dark',
+        'bg-opacity-50',
+        'fs-6'
+      )
       badgeLine.textContent = line.line.number
 
       const title = document.createElement('div')
-      title.classList.add('fw-semibold', 'station-title')
+      title.classList.add('station-title', 'fw-bold')
       const labelDirection = (line.direction.name || '').split('/')[0].trim()
       title.textContent = labelDirection
 
       left.append(badgeLine, title)
 
       const right = document.createElement('div')
-      right.classList.add('small', 'opacity-75', 'd-flex', 'align-items-center', 'gap-1')
+      right.classList.add('opacity-75', 'd-flex', 'align-items-center', 'gap-1')
       const iconHdr = document.createElement('i')
       iconHdr.classList.add('bi', 'bi-bus-front')
       right.appendChild(iconHdr)
@@ -251,7 +327,11 @@ const displayBusSchedule = (busData) => {
 
       const futureTimes = (line.times || [])
         .filter(t => new Date(t.realDateTime || t.dateTime) > now)
-        .sort((a, b) => new Date(a.realDateTime || a.dateTime) - new Date(b.realDateTime || b.dateTime))
+        .sort(
+          (a, b) =>
+            new Date(a.realDateTime || a.dateTime) -
+            new Date(b.realDateTime || b.dateTime)
+        )
         .slice(0, 6)
 
       if (futureTimes.length === 0) {
@@ -265,7 +345,13 @@ const displayBusSchedule = (busData) => {
           const diff = Math.max(0, Math.round(getDiffTimeMinutes(depart, now)))
 
           const item = document.createElement('div')
-          item.classList.add('list-group-item', 'd-flex', 'align-items-center', 'justify-content-between', 'py-2')
+          item.classList.add(
+            'list-group-item',
+            'd-flex',
+            'align-items-center',
+            'justify-content-between',
+            'py-2'
+          )
 
           const leftWrap = document.createElement('div')
           leftWrap.classList.add('d-flex', 'align-items-center', 'gap-2')
@@ -281,7 +367,12 @@ const displayBusSchedule = (busData) => {
           leftWrap.appendChild(statusIcon)
 
           const badge = document.createElement('span')
-          badge.classList.add('badge', 'rounded-pill', t.realDateTime ? 'bg-primary' : 'bg-secondary', !t.realDateTime && 'bg-opacity-75')
+          badge.classList.add(
+            'badge',
+            'rounded-pill',
+            t.realDateTime ? 'bg-primary' : 'bg-secondary',
+            !t.realDateTime && 'bg-opacity-75'
+          )
           badge.textContent = diff < 1 ? '< 1 min' : `${diff} min`
 
           item.append(leftWrap, badge)
@@ -294,15 +385,28 @@ const displayBusSchedule = (busData) => {
       if (trackMode) {
         card.style.cursor = 'pointer'
         const hint = document.createElement('div')
-        hint.classList.add('mt-3', 'text-muted', 'small', 'd-flex', 'align-items-center', 'gap-2')
+        hint.classList.add(
+          'mt-3',
+          'text-muted',
+          'small',
+          'd-flex',
+          'align-items-center',
+          'gap-2'
+        )
         const hintIcon = document.createElement('i')
         hintIcon.classList.add('bi', 'bi-geo-alt')
-        hint.append(hintIcon, document.createTextNode(getLabel('infoClickTrack')))
+        hint.append(
+          hintIcon,
+          document.createTextNode(getLabel('infoClickTrack'))
+        )
         body.appendChild(hint)
 
         card.addEventListener('click', () => {
           const canvas = document.getElementById('busCanvas')
-          if (busApp != null) { busApp.shutdown(); busApp = null }
+          if (busApp != null) {
+            busApp.shutdown()
+            busApp = null
+          }
 
           const nStations = Math.round(document.body.clientWidth / 150)
           busApp = new LineBusApp(
@@ -317,6 +421,14 @@ const displayBusSchedule = (busData) => {
           )
           busApp.loadBusStations()
           busApp.elementDrawer.canvas.style.display = 'block'
+
+          // Smooth scroll to canvas
+          busApp.elementDrawer.canvas.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          })
+
+          // Tiny click animation
           card.classList.add('clicked')
           setTimeout(() => card.classList.remove('clicked'), 400)
         })
