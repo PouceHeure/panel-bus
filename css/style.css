@@ -158,3 +158,18 @@ canvas {
   margin: 0 auto;
   border-radius: 12px;
 }
+
+
+@media (max-width: 576px) {
+  .bus-card-header .badge {
+    font-size: 1.2rem;
+    padding: .6rem 1rem;
+  }
+  .station-title {
+    font-size: 1.2rem;
+  }
+  .list-group-item .badge {
+    font-size: 1.1rem;
+    padding: .6rem 1rem;
+  }
+}
