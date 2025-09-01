@@ -160,16 +160,39 @@ canvas {
 }
 
 
-@media (max-width: 576px) {
+/* ===============================
+   Boost typographique mobile
+   =============================== */
+@media (max-width:800px) {
+  /* Légère hausse globale (rem Bootstrap) */
+  html { font-size: 15px; }
+
+  /* Header */
+  .app-header #currentTime { font-size: clamp(1.7rem, 6vw, 2.2rem); }
+  .app-header #legend { font-size: clamp(1rem, 3.6vw, 1.2rem); }
+
+  /* Carte : titre & badge de ligne */
+  .bus-card-header .fw-semibold,
+  .station-title {
+    font-size: clamp(1.15rem, 4vw, 1.35rem);
+    line-height: 1.25;
+  }
   .bus-card-header .badge {
-    font-size: 1.2rem;
+    font-size: clamp(1.05rem, 3.8vw, 1.25rem);
     padding: .6rem 1rem;
   }
-  .station-title {
-    font-size: 1.2rem;
+
+  /* Liste des horaires */
+  .list-group-item { 
+    font-size: clamp(1.05rem, 3.8vw, 1.2rem);
+    padding-top: .6rem;
+    padding-bottom: .6rem;
   }
   .list-group-item .badge {
-    font-size: 1.1rem;
+    font-size: clamp(1.05rem, 4vw, 1.25rem);
     padding: .6rem 1rem;
   }
+
+  /* Footer */
+  #controlsContainer { font-size: clamp(1rem, 3.6vw, 1.15rem); }
 }
