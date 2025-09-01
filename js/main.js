@@ -1,21 +1,17 @@
-// Global variables
-const versionApp = '1.1.0'
-// station info
-let stationID = 31500 // Guy Denielou
+// Global constants / variables
+const versionApp = "2.0.0"
+let stationID = 31500 // Default station
 let stationName = ''
-// last update info
 let lastUpdateData = null
 let lastUpdateTime = null
-// auto refresh
 const autoRefreshDefault = true
 let autoRefreshInterval = null
-const intervalTimeRefreshRequest = 10 * 1000 // milliseconds
-const intervalTimeRefreshDate = 10 * 1000 // milliseconds (only if no data refresh)
-// language
+const intervalTimeRefreshRequest = 10 * 1000 // ms
+const intervalTimeRefreshDate = 10 * 1000 // ms (only if no data refresh)
 let language = 'fr'
-// track
 let trackMode = false
 
+// Labels (multilingual)
 const labels = {
   en: {
     serviceOFF: 'Service OFF',
@@ -28,7 +24,8 @@ const labels = {
     status: 'Status',
     statusConnected: 'Connected',
     statusWaitConnection: 'Waiting Connection',
-    statusNotConnected: 'Not Connected'
+    statusNotConnected: 'Not Connected',
+    infoClickTrack: 'Click to display bus position'
   },
   fr: {
     serviceOFF: 'Service Arrêté',
@@ -41,112 +38,86 @@ const labels = {
     status: 'Status',
     statusConnected: 'Connecté',
     statusWaitConnection: 'Connexion En Cours',
-    statusNotConnected: 'Non Connecté'
+    statusNotConnected: 'Non Connecté',
+    infoClickTrack: 'Cliquer pour voir la position du bus'
   }
 }
 
+// Return translated label
 function getLabel (key) {
   const lang = labels[language] || labels['en']
   return lang[key]
 }
 
+// Update legend + switch label in header
 function updateHeadText () {
   const legendContainer = document.getElementById('legend')
   legendContainer.innerHTML = `
-        ${getLabel('legend')}: 
-        <span class="real-time">${getLabel('realTime')}</span>,
-        <span class="scheduled-time">${getLabel('scheduledTime')}</span>
-    `
-  const label = document.querySelector('label[for="autoRefreshCheckbox"]')
-  label.textContent = `${getLabel('autoRefresh')}`
-
+    <span class="d-flex align-items-center gap-1">
+      <i class="bi bi-broadcast-pin text-primary"></i> ${getLabel('realTime')}
+    </span>
+    <span class="d-flex align-items-center gap-1">
+      <i class="bi bi-clock text-secondary"></i> ${getLabel('scheduledTime')}
+    </span>
+  `
+  // const label = document.querySelector('label[for="autoRefreshCheckbox"]')
+  // label.textContent = getLabel('autoRefresh')
   stationName = getLabel('waitingConnection')
 }
 
-// Events
+// DOM ready
 document.addEventListener('DOMContentLoaded', function () {
   const paramStationID = getStationIDFromURL()
-  if (paramStationID) {
-    stationID = paramStationID
-  }
+  if (paramStationID) stationID = paramStationID
   fetchAndDisplayBusSchedule()
 
   const paramLang = getLangFromURL()
-  if (paramLang) {
-    language = paramLang.toLocaleLowerCase()
-  } else {
-    language = navigator.language.split('-')[0]
-  }
+  language = paramLang ? paramLang.toLowerCase() : navigator.language.split('-')[0]
+
   updateHeadText()
 
-  document.getElementById('autoRefreshCheckbox').checked = autoRefreshDefault
-  toggleAutoRefresh(autoRefreshDefault)
-  document
-    .getElementById('autoRefreshCheckbox')
-    .addEventListener('change', function () {
-      toggleAutoRefresh(this.checked)
-    })
+
+  toggleAutoRefresh(true);
+  // document.getElementById('autoRefreshCheckbox').checked = autoRefreshDefault
+  // toggleAutoRefresh(autoRefreshDefault)
+  // document.getElementById('autoRefreshCheckbox')
+  //   .addEventListener('change', function () {
+  //     toggleAutoRefresh(this.checked)
+  //   })
 
   document.getElementById('versionNumber').textContent = versionApp
+  console.log(versionApp);
   updateDateAndNameStation()
 
   const paramTrack = getTrackMode()
-  if (paramTrack) {
-    trackMode = paramTrack.toLowerCase() == 'true'
-  }
-
-//   setInterval(drawBus, 1000)
+  if (paramTrack) trackMode = paramTrack.toLowerCase() === 'true'
 })
 
-function drawBus(){
-    if(busApp != null && busApp.isConnected()){
-        busApp.draw()
-    }
+// Redraw buses every tick (if connected)
+function drawBus () {
+  if (busApp != null && busApp.isConnected()) busApp.draw()
 }
 
-window.addEventListener('pageshow', function (event) {
-  if (event.persisted) {
-    window.location.reload(true)
-  }
-})
-
-window.addEventListener('resize', function () {
+// Page events
+window.addEventListener('pageshow', e => { if (e.persisted) window.location.reload(true) })
+window.addEventListener('resize', () => {
   if (busApp != null) {
     busApp.elementDrawer.getHTMLElements()
     busApp.draw()
   }
 })
+window.addEventListener('beforeunload', () => { if (busApp != null) busApp.shutdown() })
 
-window.addEventListener('beforeunload', function () {
-  if (busApp != null) {
-    busApp.shutdown()
-  }
-})
+// Helpers: read URL params
+function getStationIDFromURL () { return new URLSearchParams(window.location.search).get('stationID') }
+function getLangFromURL () { return new URLSearchParams(window.location.search).get('lang') }
+function getTrackMode () { return new URLSearchParams(window.location.search).get('track') }
 
-// Retrieve station ID from URL
-function getStationIDFromURL () {
-  const params = new URLSearchParams(window.location.search)
-  return params.get('stationID')
-}
-
-function getLangFromURL () {
-  const params = new URLSearchParams(window.location.search)
-  return params.get('lang')
-}
-
-function getTrackMode () {
-  const params = new URLSearchParams(window.location.search)
-  return params.get('track')
-}
-
-// Toggle the auto-refresh state
+// Toggle auto-refresh
 function toggleAutoRefresh (isEnabled) {
   if (isEnabled) {
     if (!autoRefreshInterval) {
-      autoRefreshInterval = setInterval(
-        fetchAndDisplayBusSchedule,
-        intervalTimeRefreshRequest
-      )
+      autoRefreshInterval = setInterval(fetchAndDisplayBusSchedule, intervalTimeRefreshRequest)
     }
   } else {
     setInterval(updateDateAndNameStation, intervalTimeRefreshDate)
@@ -155,7 +126,7 @@ function toggleAutoRefresh (isEnabled) {
   }
 }
 
-// Update the date and station name in the UI
+// Update header date + station
 function updateDateAndNameStation () {
   const title = `${new Date().toLocaleTimeString(navigator.language, {
     hour: '2-digit',
@@ -165,53 +136,41 @@ function updateDateAndNameStation () {
   document.title = `Bus: ${stationName}`
 }
 
-// Check if a body element is empty
-function bodyIsEmpty (elementId) {
-  const element = document.getElementById(elementId)
-  return element && element.textContent.trim() === ''
-}
+// Misc helpers
+function bodyIsEmpty (id) { return document.getElementById(id)?.textContent.trim() === '' }
+function isServiceTime (h) { return h > 5 && h < 22 }
+function clearContainer (el) { el.innerHTML = '' }
+function dateToStringHHMMSS (d) { return d.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }
+function dateToStringHHMM (d) { return d.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' }) }
+function updateDateRefresh (d) { document.getElementById('updateDate').textContent = `${getLabel('update')}: ${dateToStringHHMMSS(d)}` }
+function getDiffTimeMinutes (a, b) { return (a - b) / 60000 }
 
-// Determine if it is service time
-function isServiceTime (time) {
-  return time > 5 && time < 22
-}
-
-// Fetch and display bus schedule
+// Fetch and render schedule
 function fetchAndDisplayBusSchedule () {
   let serviceIsOFF = false
-  fetch(
-    `https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=`
-  )
-    .then(response => {
-      if (response.status === 204) {
-        serviceIsOFF = true
-        return {}
-      }
-      return response.json()
+  fetch(`https://api.oisemob.cityway.fr/media/api/v1/fr/Schedules/LogicalStop/${stationID}/NextDeparture?realTime=true&lineId=&direction=`)
+    .then(res => {
+      if (res.status === 204) { serviceIsOFF = true; return {} }
+      return res.json()
     })
     .then(data => {
       if (!serviceIsOFF) {
         const now = new Date()
-        // check it's necessary to update
-        const dataEmpty = data.length == 0
-        const hasRealTimeData =
-          data &&
-          data.length > 0 &&
-          data[0].lines.some(line => line.times.some(time => time.realDateTime))
-        const stateIsFirstLoad = lastUpdateTime == null
-        const okToUpdateData =
-          !dataEmpty && (hasRealTimeData || stateIsFirstLoad)
-        // update data
-        if (okToUpdateData) {
+        const empty = data.length === 0
+        const hasRealTime = data?.[0]?.lines.some(l => l.times.some(t => t.realDateTime))
+        const firstLoad = lastUpdateTime == null
+        const updateOK = !empty && (hasRealTime || firstLoad)
+
+        if (updateOK) {
           updateDateRefresh(now)
           lastUpdateTime = now
           lastUpdateData = data
         } else {
-          console.log('No real-time data available for this refresh cycle.')
+          console.log('No real-time data available this cycle.')
           data = lastUpdateData
         }
 
-        if (data[0].lines && data[0].lines.length > 0) {
+        if (data?.[0]?.lines?.length > 0) {
           stationName = data[0].lines[0].stop.name
         }
         displayBusSchedule(data)
@@ -221,133 +180,153 @@ function fetchAndDisplayBusSchedule () {
       }
       updateDateAndNameStation()
     })
-    .catch(error => {
-      console.error('Error fetching data:', error)
-    })
+    .catch(err => console.error('Error fetching data:', err))
 }
 
-// Clear HTML content of a container
-function clearContainer (container) {
-  container.innerHTML = ''
-}
-
-function dateToStringHHMMSS (date) {
-  return date.toLocaleTimeString(navigator.language, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })
-}
-
-function dateToStringHHMM (date) {
-  return date.toLocaleTimeString(navigator.language, {
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
-
-// Update the refresh date display
-function updateDateRefresh (date) {
-  document.getElementById('updateDate').textContent = `${getLabel(
-    'update'
-  )}: ${dateToStringHHMMSS(date)}`
-}
-
-// Get time difference in minutes between 2 Date
-function getDiffTimeMinutes (tA, tB) {
-  return (tA - tB) / 60000
-}
-
-// Display the bus schedule in the UI
-const displayBusSchedule = busData => {
+// Render bus schedule cards
+const displayBusSchedule = (busData) => {
   const now = new Date()
   const container = document.getElementById('busInfo')
   clearContainer(container)
+
+  const row = document.createElement('div')
+  row.classList.add('row', 'g-3')
+  container.appendChild(row)
+
   busData.forEach(transport => {
-    if (transport.transportMode === 'Bus') {
-      transport.lines.forEach(line => {
-        const lineContainer = document.createElement('div')
-        lineContainer.classList.add('bus-container')
+    if (transport.transportMode !== 'Bus') return
 
-        const lineTitle = document.createElement('div')
-        lineTitle.classList.add('line-title')
-        lineTitle.style.backgroundColor = `#${line.line.color}`
+    transport.lines.forEach(line => {
+      // Col
+      const col = document.createElement('div')
+      col.classList.add('col-12', 'col-md-6', 'col-lg-4', 'col-xxl-3')
+      row.appendChild(col)
 
-        const lineNumber = document.createElement('span')
-        lineNumber.classList.add('line-number')
-        lineNumber.textContent = line.line.number
-        const labelDirection = line.direction.name.split('/')[0].trim()
+      // Card
+      const card = document.createElement('div')
+      card.classList.add('card', 'shadow-sm', 'h-100', 'bus-card', 'transition-soft')
+      col.appendChild(card)
 
-        let size = 40 - line.line.number.length
-        lineNumber.style.fontSize = `${size}px`
+      // Header
+      const color = `#${String(line.line.color || '').replace(/^#/, '')}`
+      const header = document.createElement('div')
+      header.classList.add('card-header', 'text-white', 'bus-card-header', 'd-flex', 'align-items-center')
+      header.style.setProperty('--line-color', color)
 
-        lineTitle.appendChild(lineNumber)
-        lineTitle.innerHTML += `<span class='direction-title'> ${labelDirection}</span>`
-        lineContainer.appendChild(lineTitle)
+      const headerWrap = document.createElement('div')
+      headerWrap.classList.add('d-flex', 'align-items-center', 'justify-content-between', 'w-100', 'bus-card-header-title')
 
-        const directionContainer = document.createElement('div')
-        directionContainer.classList.add('direction-container')
-        lineContainer.appendChild(directionContainer)
+      const left = document.createElement('div')
+      left.classList.add('d-flex', 'align-items-center', 'gap-2')
 
-        const futureTimes = line.times
-          .filter(time => new Date(time.realDateTime || time.dateTime) > now)
-          .sort(
-            (a, b) =>
-              new Date(a.realDateTime || a.dateTime) -
-              new Date(b.realDateTime || b.dateTime)
-          )
+      const badgeLine = document.createElement('span')
+      badgeLine.classList.add('badge', 'rounded-pill', 'bg-dark', 'bg-opacity-50', 'fs-6')
+      badgeLine.textContent = line.line.number
 
-        futureTimes.forEach((time, index) => {
-          const departTime = new Date(time.realDateTime || time.dateTime)
-          let diff = getDiffTimeMinutes(departTime, now)
+      const title = document.createElement('div')
+      title.classList.add('fw-semibold', 'station-title')
+      const labelDirection = (line.direction.name || '').split('/')[0].trim()
+      title.textContent = labelDirection
 
-          const timeElement = document.createElement('p')
-          timeElement.classList.add('time-info')
-          timeElement.textContent =
-            diff < 1 ? '< 1 min' : `${Math.round(diff)} min`
-          timeElement.classList.add(
-            time.realDateTime ? 'real-time' : 'scheduled-time'
-          )
+      left.append(badgeLine, title)
 
-          directionContainer.appendChild(timeElement)
+      const right = document.createElement('div')
+      right.classList.add('small', 'opacity-75', 'd-flex', 'align-items-center', 'gap-1')
+      const iconHdr = document.createElement('i')
+      iconHdr.classList.add('bi', 'bi-bus-front')
+      right.appendChild(iconHdr)
+
+      headerWrap.append(left, right)
+      header.appendChild(headerWrap)
+      card.appendChild(header)
+
+      // Body
+      const body = document.createElement('div')
+      body.classList.add('card-body', 'pt-3')
+      card.appendChild(body)
+
+      // List times
+      const list = document.createElement('div')
+      list.classList.add('list-group', 'list-group-flush')
+
+      const futureTimes = (line.times || [])
+        .filter(t => new Date(t.realDateTime || t.dateTime) > now)
+        .sort((a, b) => new Date(a.realDateTime || a.dateTime) - new Date(b.realDateTime || b.dateTime))
+        .slice(0, 6)
+
+      if (futureTimes.length === 0) {
+        const empty = document.createElement('div')
+        empty.classList.add('text-muted', 'fst-italic')
+        empty.textContent = 'Aucun passage imminent'
+        body.appendChild(empty)
+      } else {
+        futureTimes.forEach(t => {
+          const depart = new Date(t.realDateTime || t.dateTime)
+          const diff = Math.max(0, Math.round(getDiffTimeMinutes(depart, now)))
+
+          const item = document.createElement('div')
+          item.classList.add('list-group-item', 'd-flex', 'align-items-center', 'justify-content-between', 'py-2')
+
+          const leftWrap = document.createElement('div')
+          leftWrap.classList.add('d-flex', 'align-items-center', 'gap-2')
+
+          const statusIcon = document.createElement('i')
+          if (t.realDateTime) {
+            statusIcon.classList.add('bi', 'bi-broadcast-pin', 'text-primary')
+            statusIcon.setAttribute('title', 'Temps réel')
+          } else {
+            statusIcon.classList.add('bi', 'bi-clock', 'text-secondary')
+            statusIcon.setAttribute('title', 'Planifié')
+          }
+          leftWrap.appendChild(statusIcon)
+
+          const badge = document.createElement('span')
+          badge.classList.add('badge', 'rounded-pill', t.realDateTime ? 'bg-primary' : 'bg-secondary', !t.realDateTime && 'bg-opacity-75')
+          badge.textContent = diff < 1 ? '< 1 min' : `${diff} min`
+
+          item.append(leftWrap, badge)
+          list.appendChild(item)
         })
+        body.appendChild(list)
+      }
 
-        if (trackMode) {
-          // Ajout d'un élément canvas caché
+      // Track mode (click card to show bus pos)
+      if (trackMode) {
+        card.style.cursor = 'pointer'
+        const hint = document.createElement('div')
+        hint.classList.add('mt-3', 'text-muted', 'small', 'd-flex', 'align-items-center', 'gap-2')
+        const hintIcon = document.createElement('i')
+        hintIcon.classList.add('bi', 'bi-geo-alt')
+        hint.append(hintIcon, document.createTextNode(getLabel('infoClickTrack')))
+        body.appendChild(hint)
 
-          lineContainer.addEventListener('click', () => {
-            const canvas = document.getElementById('busCanvas')
+        card.addEventListener('click', () => {
+          const canvas = document.getElementById('busCanvas')
+          if (busApp != null) { busApp.shutdown(); busApp = null }
 
-            if (busApp != undefined && busApp != null) {
-              busApp.shutdown()
-              busApp = null
-            }
-
-            const nStations = Math.round(document.body.clientWidth / 150)
-            busApp = new LineBusApp(
-              line.line.id,
-              line.direction.id,
-              line.line.number,
-              labelDirection,
-              `#${line.line.color}`,
-              line.stop.logicalId,
-              nStations,
-              canvas
-            )
-            busApp.loadBusStations()
-            busApp.elementDrawer.canvas.style.display = 'block'
-          })
-        }
-
-        container.appendChild(lineContainer)
-      })
-    }
+          const nStations = Math.round(document.body.clientWidth / 150)
+          busApp = new LineBusApp(
+            line.line.id,
+            line.direction.id,
+            line.line.number,
+            labelDirection,
+            color,
+            line.stop.logicalId,
+            nStations,
+            canvas
+          )
+          busApp.loadBusStations()
+          busApp.elementDrawer.canvas.style.display = 'block'
+          card.classList.add('clicked')
+          setTimeout(() => card.classList.remove('clicked'), 400)
+        })
+      }
+    })
   })
 }
 
+// Bus app instance
 let busApp = null
 function runPositionBus () {
-  if (busApp != null && busApp.stations.length > 0) {
-    busApp.draw()
-  }
+  if (busApp != null && busApp.stations.length > 0) busApp.draw()
 }

@@ -1,183 +1,160 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Open Sans', sans-serif;
-    background-color: #f6f6ee;
+/* ===============================
+   Bus Cards
+   =============================== */
+.bus-card {
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  will-change: transform, box-shadow;
+}
+.bus-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.7rem 1.5rem rgba(0,0,0,.10);
 }
 
-#currentTime, #legend {
-    
-    text-align: center;
-    font-size: 50px;
-    font-weight: bold;
+/* Card header with line-color gradient */
+.bus-card-header {
+  background: linear-gradient(
+    135deg,
+    var(--line-color) 0%,
+    color-mix(in srgb, var(--line-color) 70%, #000 30%) 100%
+  );
+  padding: 12px 16px;
 }
 
-#topBar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #f6f6eeEE; /* ou toute autre couleur de fond */
-    z-index: 1000; /* s'assure qu'il reste au-dessus des autres éléments */
-    /*padding: 5px 0;  ajoute un peu d'espace autour du texte */
-    padding: 10px;
-    text-align: center; /* centre le texte dans le div */
+/* Header title: fixed height, multiline allowed */
+.bus-card-header-title {
+  min-height: 64px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.station-title {
+  flex: 1;
+  white-space: normal;
+  word-break: break-word;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+/* Line badge stays compact */
+.bus-card-header .badge {
+  flex-shrink: 0;
 }
 
-#legend{
-    font-size: 18px;
+/* Schedule list: compact for mobile */
+.list-group-item {
+  padding-top: .35rem;
+  padding-bottom: .35rem;
+}
+.list-group-item .badge {
+  font-size: .98rem;
+  padding: .5rem .75rem;
 }
 
-
-
-#version, #versionNumber{
-    text-align: center;
-}   
-
-#updateDate{
-    padding-left:5px;
-    /* font-size: 16px; */
+/* Smooth hover animation */
+@media (prefers-reduced-motion: no-preference) {
+  .transition-soft {
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .bus-card.clicked {
+    transform: scale(0.995);
+  }
 }
 
+/* ===============================
+   Header & Footer (glass style)
+   =============================== */
+.app-header {
+  background: linear-gradient(135deg, #ffffffcc 0%, #f8f9fae6 100%);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 2px solid rgba(0,123,255,.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  padding-block: .6rem;
+  z-index: 1040;
+}
+.app-header-spacer { height: 92px; }
 
-span {
-    padding-left: 5px;
+.app-header #currentTime {
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #212529;
+}
+.app-header #legend {
+  font-size: .95rem;
+  display: flex;
+  gap: 1.5rem;
+  margin-top: .25rem;
+}
+.app-header #legend i {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  vertical-align: middle;
 }
 
-#busInfo {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 10px;
-    gap: 20px;
-}
-.bus-container {
-    flex: 1;
-    min-width: 300px;
-    background-color: #fff;
-    color: #000;
-    border-radius: 10px;
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    
+.app-footer {
+  --ftr-bg: rgba(255,255,255,0.75);
+  background: var(--ftr-bg);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-top: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 -6px 24px rgba(0,0,0,.08);
+  padding-block: .35rem;
+  z-index: 1040;
 }
 
-.line-title {
-    display: flex; /* Utilise Flexbox pour aligner les éléments */
-    align-items: center; /* Centre les éléments verticalement */
-    padding: 10px 15px;
-    font-size: 40px;
-    color: #fff;
-    font-weight: bold;
-    justify-content: space-between;
-    text-align: left;
-    min-height: 60px; /* Hauteur minimale pour assurer une cohérence entre toutes les barres */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1.0);
-    /* border-bottom: 5px solid #FFF;  */
-    /* box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1); */
+/* Wide color gamut if supported */
+@supports (background: color(display-p3 1 1 1)) {
+  .app-footer { background: color-mix(in srgb, white 78%, transparent); }
+  .app-header { background: color-mix(in srgb, white 72%, transparent); }
 }
 
+/* Footer details */
+#controlsContainer { font-size: .95rem; }
+#updateDate i, #version i { opacity: .8; }
 
-.direction-title {
-    font-size: 20px;
-    text-align: right;  
-    font-weight: bold;
-}
+/* ===============================
+   Layout / Global
+   =============================== */
+body { padding-bottom: 76px; } /* prevent footer overlap */
 
-
-.direction-container {
-    padding: 10px 15px;
-    font-size: 25px;
-    opacity: 0.8;
-}
-
-.time-info {
-    margin-left: 10px;
-    font-size: 25px;
-}
-.real-time {
-    color: #007BFF;
-    font-style: normal;
-}
-
-.scheduled-time {
-    color: #666;
-}
-
-.scheduled-time::before {
-    content: '\1F553 '; /* Symbole d'horloge (assurez-vous que l'espace après le code est inclus pour séparer le symbole du texte) */
-    margin-right: 5px;
-}
-
-.real-time::before {
-    content: '📶';
-    display: inline-block;
-    margin-right: 5px;
-    color: #007BFF; /* Ou toute autre couleur de votre choix */
-}
-
-#controlsContainer {
-    display: flex;
-    justify-content: space-between; /* Écarte les enfants aux extrémités du conteneur */
-    align-items: center; /* Centre les enfants verticalement */
-    padding-left: 15px; /* Ajoute un peu d'espace autour du conteneur */
-    padding-right: 15px;
-    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne en dessous si l'espace est insuffisant */
-    font-size: 20px;
-}
-
-
-
-
-
-
-
-.real-time, .scheduled-time {
-    margin-right: 10px; /* Ajoute un peu d'espace entre les spans et leurs labels respectifs */
-}
-
-#autoRefreshOption {
-    display: none;
-    justify-content: center;  /* Centre les éléments horizontalement */
-    align-items: center;      /* Centre les éléments verticalement */
-    font-size: 25px;          /* Définit la taille de la police pour tous les enfants */
-}
-
-input[type='checkbox'] {
-    width: 30px;
-    height: 30px;
-    background:white;
-    accent-color: #007BFF;
-    border-radius: 5px;
-    border:2px solid #555;
-    /* transform: scale(1.2); */
-}
-
-#currentLink {
-    color: #007bff; /* Couleur bleue pour le lien, par exemple */
-    text-decoration: none; /* Supprime le soulignement par défaut */
-}
-
-#currentLink:hover {
-    text-decoration: underline; /* Ajoute un soulignement au survol pour une meilleure accessibilité */
-}
-
-footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    color: #333;
-    background-color: #f6f6eeEE;
-    text-align: center;
-    padding-bottom: 10px;
-    padding-top: 10px;
-}
-
+/* Canvas */
 canvas {
-    display: none;
-    width: 100%;
+  display: none;
+  width: 100%;
 }
 
-.clear { clear: both; height: 100px; }
+/* ===============================
+   Responsive tweaks
+   =============================== */
+@media (max-width: 576px) {
+  .bus-card-header .fw-semibold { font-size: 1rem; }
+}
 
+/* ===============================
+   Legacy semantic classes
+   (kept for hooks, no emoji)
+   =============================== */
+.real-time::before,
+.scheduled-time::before { content: none !important; }
+.real-time {}
+.scheduled-time {}
+
+/* ===============================
+   Canvas Wrapper
+   =============================== */
+.bus-canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 1rem auto;
+  width: 100%;
+}
+#busCanvas {
+  display: none;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 12px;
+}
