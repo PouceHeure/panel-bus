@@ -2,6 +2,7 @@
 const versionApp = '2.0.0'
 let stationID = 31500 // Default station
 let stationName = ''
+let filterLines = null
 let lastUpdateData = null
 let lastUpdateTime = null
 const autoRefreshDefault = true
@@ -69,6 +70,10 @@ function updateHeadText () {
 document.addEventListener('DOMContentLoaded', function () {
   const paramStationID = getStationIDFromURL()
   if (paramStationID) stationID = paramStationID
+
+  const paramFilterLines = getFilterLinesFromURL();
+  if(paramFilterLines) filterLines = paramFilterLines;
+
   fetchAndDisplayBusSchedule()
 
   const paramLang = getLangFromURL()
@@ -123,6 +128,18 @@ function getLangFromURL () {
 function getTrackMode () {
   return new URLSearchParams(window.location.search).get('track')
 }
+function getTrackMode () {
+  return new URLSearchParams(window.location.search).get('track')
+}
+function getFilterLinesFromURL () {
+  const filterParam = new URLSearchParams(window.location.search).get('filterlines');
+  if(filterParam){
+    return  filterParam.split(',');
+  }
+  return filterParam
+}
+
+
 
 // Toggle auto-refresh
 function toggleAutoRefresh (isEnabled) {
@@ -247,7 +264,25 @@ const displayBusSchedule = busData => {
   busData.forEach(transport => {
     if (transport.transportMode !== 'Bus') return
 
+    
+
     transport.lines.forEach(line => {
+
+      if(filterLines){
+      name_line = line.line.number;
+      let filter_ok = false;
+      filterLines.forEach(
+        filter => {
+          if(name_line.toLowerCase().includes(filter.toLowerCase())){
+            filter_ok = true;
+          }
+        }
+      )
+      if(!filter_ok){
+        return;
+      }
+    }
+
       // Col
       const col = document.createElement('div')
       col.classList.add('col')
@@ -288,16 +323,29 @@ const displayBusSchedule = busData => {
 
       const left = document.createElement('div')
       left.classList.add('d-flex', 'align-items-center', 'gap-2')
+      left.classList.add('bus-card-header-left')
 
-      const badgeLine = document.createElement('span', 'fw-bold')
-      badgeLine.classList.add(
-        'badge',
-        'rounded-pill',
-        'bg-dark',
-        'bg-opacity-50',
-        'fs-6'
-      )
-      badgeLine.textContent = line.line.number
+      const badgeLine = document.createElement('span')
+badgeLine.classList.add(
+  'badge',
+  'rounded-pill',
+  'bg-dark',
+  'bg-opacity-50',
+  'fs-6',
+  'd-inline-flex',
+  'align-items-center',
+  'gap-1'             // <-- espace automatique entre icône et texte
+)
+
+// Création de l’icône
+const icon = document.createElement('i')
+icon.classList.add('bi', 'bi-bus-front')
+
+// Texte du numéro de ligne
+const lineText = document.createTextNode(line.line.number)
+
+// On assemble : icône puis numéro
+badgeLine.append(icon, lineText)
 
       const title = document.createElement('div')
       title.classList.add('station-title', 'fw-bold')
@@ -306,13 +354,14 @@ const displayBusSchedule = busData => {
 
       left.append(badgeLine, title)
 
-      const right = document.createElement('div')
-      right.classList.add('opacity-75', 'd-flex', 'align-items-center', 'gap-1')
-      const iconHdr = document.createElement('i')
-      iconHdr.classList.add('bi', 'bi-bus-front')
-      right.appendChild(iconHdr)
+      // const right = document.createElement('div')
+      // right.classList.add('bus-card-header-right')
+      // right.classList.add('opacity-75', 'd-flex', 'align-items-center', 'gap-1')
+      // const iconHdr = document.createElement('i')
+      // iconHdr.classList.add('bi', 'bi-bus-front')
+      // right.appendChild(iconHdr)
 
-      headerWrap.append(left, right)
+      headerWrap.append(left)
       header.appendChild(headerWrap)
       card.appendChild(header)
 
@@ -337,7 +386,7 @@ const displayBusSchedule = busData => {
       if (futureTimes.length === 0) {
         const empty = document.createElement('div')
         empty.classList.add('text-muted', 'fst-italic')
-        empty.textContent = 'Aucun passage imminent'
+        // empty.textContent = 'Aucun passage imminent'
         body.appendChild(empty)
       } else {
         futureTimes.forEach(t => {
@@ -359,10 +408,10 @@ const displayBusSchedule = busData => {
           const statusIcon = document.createElement('i')
           if (t.realDateTime) {
             statusIcon.classList.add('bi', 'bi-broadcast-pin', 'text-primary')
-            statusIcon.setAttribute('title', 'Temps réel')
+            statusIcon.setAttribute('title', 'real-time')
           } else {
             statusIcon.classList.add('bi', 'bi-clock', 'text-secondary')
-            statusIcon.setAttribute('title', 'Planifié')
+            statusIcon.setAttribute('title', 'scheduled')
           }
           leftWrap.appendChild(statusIcon)
 

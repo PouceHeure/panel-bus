@@ -1,8 +1,8 @@
 /* ===============================
    Base / Global
    =============================== */
-html { font-size: 18px; }           /* root size desktop */
-body { padding-bottom: 76px; }      /* prevent footer overlap */
+html { font-size: 18px; }
+body { padding-bottom: 76px; }
 
 /* ===============================
    Bus Cards
@@ -19,50 +19,56 @@ body { padding-bottom: 76px; }      /* prevent footer overlap */
   box-shadow: 0 0.7rem 1.5rem rgba(0,0,0,.10);
 }
 
-/* Header strip tinted with line color */
+/* Header */
 .bus-card-header {
   background: var(--line-color);
   padding: 12px 16px;
 }
-
-/* Header content */
 .bus-card-header-title {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   min-height: 64px;
-  white-space: normal; /* allow wrapping */
-  min-width: 0;        /* flex shrink fix */
+  min-width: 0;
 }
+.bus-card-header-left  { display: flex; align-items: center; gap: .5rem; }
+.bus-card-header-right { display: flex; align-items: center; gap: .25rem; opacity: .75; }
 
-/* Title/direction */
+/* Direction */
 .station-title {
-  flex: 1;
+  flex: 1 1 auto;
   white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
   overflow-wrap: anywhere;
-  min-width: 0;        /* enables ellipsis/wrap correctly */
+  min-width: 0;
   font-size: 1rem;
   line-height: 1.2;
 }
 
-/* Schedule list */
-.list-group-item {
-  padding-top: .35rem;
-  padding-bottom: .35rem;
-}
-.list-group-item .badge {
-  font-size: .98rem;
-  padding: .5rem .75rem;
+/* Badge (numéro de ligne) */
+.bus-card-header .badge {
+  flex-shrink: 0;
+  max-width: none;
+  white-space: normal;
+  text-overflow: unset;
+  overflow: visible;
+  text-align: center;
 }
 
-/* Smooth hover animation (if allowed) */
+/* Liste horaires */
+.list-group-item { padding-top: .35rem; padding-bottom: .35rem; }
+.list-group-item .badge { font-size: .98rem; padding: .5rem .75rem; }
+
+/* Animations */
 @media (prefers-reduced-motion: no-preference) {
   .transition-soft { transition: transform .2s ease, box-shadow .2s ease; }
   .bus-card.clicked { transform: scale(0.995); }
 }
 
 /* ===============================
-   Header & Footer (glass style)
+   Header & Footer (glass)
    =============================== */
 .app-header {
   background: linear-gradient(135deg, #ffffffcc 0%, #f8f9fae6 100%);
@@ -74,24 +80,14 @@ body { padding-bottom: 76px; }      /* prevent footer overlap */
   z-index: 1040;
 }
 .app-header-spacer { height: 92px; }
-
 .app-header #currentTime {
   font-size: 1.8rem;
   font-weight: 600;
   letter-spacing: 1px;
   color: #212529;
 }
-.app-header #legend {
-  font-size: .95rem;
-  display: flex;
-  gap: 1.5rem;
-  margin-top: .25rem;
-}
-.app-header #legend i {
-  font-size: 1.2rem;
-  opacity: 0.9;
-  vertical-align: middle;
-}
+.app-header #legend { font-size: .95rem; display: flex; gap: 1.5rem; margin-top: .25rem; }
+.app-header #legend i { font-size: 1.2rem; opacity: 0.9; vertical-align: middle; }
 
 .app-footer {
   --ftr-bg: rgba(255,255,255,0.75);
@@ -103,76 +99,51 @@ body { padding-bottom: 76px; }      /* prevent footer overlap */
   padding-block: .35rem;
   z-index: 1040;
 }
-
-/* Wide color gamut if supported */
 @supports (background: color(display-p3 1 1 1)) {
   .app-footer { background: color-mix(in srgb, white 78%, transparent); }
   .app-header { background: color-mix(in srgb, white 72%, transparent); }
 }
-
-/* Footer details */
 #controlsContainer { font-size: .95rem; }
 #updateDate i, #version i { opacity: .8; }
 
 /* ===============================
    Canvas
    =============================== */
-.bus-canvas-wrapper {
-  display: flex;
-  justify-content: center;
-  margin: 1rem auto;
-  width: 100%;
-}
-#busCanvas {
-  display: none;
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-  border-radius: 12px;
-}
+.bus-canvas-wrapper { display: flex; justify-content: center; margin: 1rem auto; width: 100%; }
+#busCanvas { display: none; max-width: 100%; height: auto; margin: 0 auto; border-radius: 12px; }
 canvas { display: none; width: 100%; }
 
 /* ===============================
-   Utilities / Legacy hooks
+   Utilities
    =============================== */
-.real-time::before,
-.scheduled-time::before { content: none !important; }
-
-/* Let grid columns shrink properly in flex rows */
+.real-time::before, .scheduled-time::before { content: none !important; }
 #busInfo .row > [class*="col"] { min-width: 0; }
-
-/* Badge (line number): keep compact with ellipsis if long */
-.bus-card-header .badge {
-  flex-shrink: 0;
-  max-width: 4.5rem;       /* adjust to taste */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: center;
-}
 
 /* ===============================
    Responsive
    =============================== */
-
-/* Small phones: optional tweak for .fw-semibold inside header */
-@media (max-width:576px) {
-  .bus-card-header .fw-semibold { font-size: clamp(1.05rem, 4vw, 1.25rem); }
-}
-
-/* Mobile typography (moderate) */
-@media (max-width:800px) {
-  /* smaller root for mobile with viewport active */
+@media (max-width: 800px) {
   html { font-size: 14.5px; }
 
-  /* Header */
+  /* App header */
   .app-header #currentTime { font-size: clamp(1.6rem, 5.2vw, 2rem); }
   .app-header #legend { font-size: clamp(0.95rem, 3.2vw, 1.1rem); }
   .app-header #legend i { font-size: clamp(1.05rem, 3.6vw, 1.3rem); }
 
-  /* Card header text & badge */
+  /* Header carte : badge+icône sur 1ère ligne, direction centrée en 2ème */
+  .bus-card-header-left {
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+    width: 100%;
+  }
+  .bus-card-header-title,
+  .bus-card-header { overflow: visible; }
+
   .station-title {
-    font-size: clamp(1.1rem, 4.2vw, 1.4rem);
+    width: 100%;
+    text-align: center;
+    font-size: clamp(1rem, 4.2vw, 1.4rem);
     line-height: 1.25;
   }
   .bus-card-header .badge {
@@ -180,7 +151,7 @@ canvas { display: none; width: 100%; }
     padding: .5rem .85rem;
   }
 
-  /* Schedule list */
+  /* Liste horaires */
   .list-group-item {
     font-size: clamp(1.05rem, 3.6vw, 1.2rem);
     padding-top: .6rem;
@@ -193,4 +164,8 @@ canvas { display: none; width: 100%; }
 
   /* Footer */
   #controlsContainer { font-size: clamp(0.95rem, 3.2vw, 1.1rem); }
+}
+
+@media (max-width: 480px) {
+  html { font-size: 12px; }
 }
