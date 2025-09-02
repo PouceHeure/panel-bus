@@ -124,6 +124,7 @@ class Bus extends Entity {
     this.OldBus = []
     this._xFiltered = null // smoothing filter
     this._lastTs = null
+    this.is_the_next = false
   }
   updateGps (position_gps, date = null) {
     const newPosition = !GPS.approxEqualMeters(
@@ -152,6 +153,11 @@ class Bus extends Entity {
     this._lastTs = nowMs
     return this._xFiltered
   }
+
+  isTheNext(is_the_next){
+    this.is_the_next = is_the_next;
+  }
+
   savePosition () {
     // Keep a light snapshot instead of deep‑cloning the whole object
     this.OldBus.push({
@@ -620,6 +626,7 @@ class DrawBusLine extends Draw {
     this.destination = destination
     this.stationGoalId = stationGoalId
     this.statusConnection = StatusConnection.WAIT_CONNECTION
+    this.loadingAngle = 0
   }
   updateStations (stations) {
     this.stations = stations
@@ -672,17 +679,40 @@ class DrawBusLine extends Draw {
     else if (this.statusConnection === StatusConnection.NO_CONNECTED)
       labelConnection = getLabelSafe('statusNotConnected')
 
-    ctx.fillStyle = isConnected ? '#198754' : '#6c757d'
+    // ctx.fillStyle = isConnected ? '#198754' : '#6c757d'
+    ctx.fillStyle = this.elementDrawer.mainColor
     const status = `${getLabelSafe('status')}: ${labelConnection}`
     ctx.fillText(status, xTitle, yTitle + subPx + 6)
 
     ctx.restore()
   }
 
-  draw () {
-    const isConnected = this.statusConnection === StatusConnection.CONNECTED
-    const y = this.elementDrawer.getHeightLine()
+  draw() {
     const ctx = this.elementDrawer.ctx
+    const y = this.elementDrawer.getHeightLine()
+    const isConnected = this.statusConnection === StatusConnection.CONNECTED
+
+    // ---- LOADING STATE ----
+    if (this.statusConnection === StatusConnection.WAIT_CONNECTION) {
+      const cx = this.elementDrawer.getWidth() / 2
+      const cy = this.elementDrawer.getHeight() / 2
+      const r = 30
+      const start = this.loadingAngle
+      const end = start + Math.PI * 1.2
+
+      ctx.save()
+      ctx.lineWidth = 5
+      ctx.strokeStyle = this.elementDrawer.mainColor
+      ctx.beginPath()
+      ctx.arc(cx, cy, r, start, end)
+      ctx.stroke()
+      ctx.restore()
+
+      // avancer l’angle pour l’animation
+      this.loadingAngle += 0.08
+      requestAnimationFrame(() => this.elementDrawer.clearCanvas() || this.draw())
+      return
+    }
 
     const xStartLine = 0.0
     const xEndLine = this.elementDrawer.width
@@ -868,8 +898,8 @@ class DrawBus extends Draw {
       this.elementDrawer.setFont(ctx, '600', txtPx)
       ctx.fillStyle = '#000'
 
-      const kmPerh__Ref = 30.0
-      const mPers__ref = kmPerh__Ref / 3.6
+      const kmPerh__ref = 30.0
+      const mPers__ref = kmPerh__ref / 3.6
 
       const timeleft_s = this.bus.position_x_goal / mPers__ref;
       const txtTimeLeft = formatSecond(timeleft_s);
