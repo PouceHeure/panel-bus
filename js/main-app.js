@@ -1,7 +1,8 @@
 // Global constants / variables
 const versionApp = '2.0.1'
 let stationID = 31500 // Default station
-let stationName = ''
+let stationName = null
+let appState = ""
 let filterLines = null
 let lastUpdateData = null
 let lastUpdateTime = null
@@ -63,7 +64,7 @@ function updateHeadText () {
   `
   // const label = document.querySelector('label[for="autoRefreshCheckbox"]')
   // label.textContent = getLabel('autoRefresh')
-  stationName = getLabel('waitingConnection')
+  appState = getLabel('waitingConnection')
 }
 
 // DOM ready
@@ -74,16 +75,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const paramFilterLines = getFilterLinesFromURL()
   if (paramFilterLines) filterLines = paramFilterLines
 
-  fetchAndDisplayBusSchedule()
 
   const paramLang = getLangFromURL()
   language = paramLang
     ? paramLang.toLowerCase()
     : navigator.language.split('-')[0]
 
+  toggleAutoRefresh(true)
+
+  fetchAndDisplayBusSchedule()
   updateHeadText()
 
-  toggleAutoRefresh(true)
+  
   // document.getElementById('autoRefreshCheckbox').checked = autoRefreshDefault
   // toggleAutoRefresh(autoRefreshDefault)
   // document.getElementById('autoRefreshCheckbox')
@@ -92,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
   //   })
 
   document.getElementById('versionNumber').textContent = versionApp
-  console.log(versionApp)
+  // console.log(versionApp)
   updateDateAndNameStation()
 
   const paramTrack = getTrackMode()
@@ -159,12 +162,23 @@ function toggleAutoRefresh (isEnabled) {
 
 // Update header date + station
 function updateDateAndNameStation () {
-  const title = `${new Date().toLocaleTimeString(navigator.language, {
+  const currentTimeStr = `${new Date().toLocaleTimeString(navigator.language, {
     hour: '2-digit',
     minute: '2-digit'
-  })} - Station: ${stationName}`
+  })}`
+
+  let title = currentTimeStr;
+  let siteName = ""
+  if(stationName){
+    title = `${title} - Station: ${stationName}`;
+    siteName = `Bus: ${stationName}`
+  }else{
+    title = `${title} - ${appState}`
+    siteName = `${appState}`
+  }
+
   document.getElementById('currentTime').textContent = title
-  document.title = `Bus: ${stationName}`
+  document.title = siteName
 }
 
 // Misc helpers
@@ -237,7 +251,8 @@ function fetchAndDisplayBusSchedule () {
         displayBusSchedule(data)
       } else {
         clearContainer(document.getElementById('busInfo'))
-        stationName = getLabel('serviceOFF')
+        appState = getLabel('serviceOFF')
+        stationName = null
       }
       updateDateAndNameStation()
     })
@@ -381,6 +396,7 @@ const displayBusSchedule = busData => {
         empty.classList.add('text-muted', 'fst-italic')
         // empty.textContent = 'Aucun passage imminent'
         body.appendChild(empty)
+        return;
       } else {
         futureTimes.forEach(t => {
           const depart = new Date(t.realDateTime || t.dateTime)
