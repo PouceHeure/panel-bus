@@ -329,20 +329,13 @@ const displayBusSchedule = busData => {
         'fs-6',
         'd-inline-flex',
         'align-items-center',
-        'gap-1' // <-- espace automatique entre icône et texte
+        'gap-1'
       )
 
-      // Création de l’icône
       const icon = document.createElement('i')
       icon.classList.add('bi', 'bi-bus-front')
       const lineText = document.createTextNode(line.line.number)
       badgeLine.append(icon, lineText)
-
-      // const title = document.createElement('div')
-      // title.classList.add('station-title', 'fw-bold')
-      // const labelDirection = (line.direction.name || '').split('/')[0].trim()
-      // title.textContent = labelDirection
-
 
       const directionLine = document.createElement('span')
       directionLine.classList.add(
@@ -353,9 +346,8 @@ const displayBusSchedule = busData => {
         'station-title', 'fw-bold'
       )
 
-      // Création de l’icône
       const iconDir = document.createElement('i')
-      iconDir.classList.add('bi', 'bi-signpost','p-2')
+      iconDir.classList.add('bi', 'bi-signpost')
       const labelDirection = (line.direction.name || '').split('/')[0].trim()
       const textDir = document.createTextNode(labelDirection)
       directionLine.append(iconDir, textDir)

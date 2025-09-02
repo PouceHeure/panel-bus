@@ -2,7 +2,7 @@
    Base / Global
    =============================== */
 html { font-size: 18px; }
-body { padding-bottom: 76px; }
+body { padding-bottom: 76px; background-color: #EEE;}
 
 /* ===============================
    Bus Cards
@@ -74,8 +74,8 @@ body { padding-bottom: 76px; }
   background: linear-gradient(135deg, #ffffffcc 0%, #f8f9fae6 100%);
   backdrop-filter: saturate(160%) blur(12px);
   -webkit-backdrop-filter: saturate(160%) blur(12px);
-  /* border-bottom: 2px solid rgba(0,123,255,.2); */
-  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  border-bottom: 2px solid var(--bs-primary);
+  box-shadow: 0 4px 20px rgba(0,0,0,.1);
   padding-block: .6rem;
   z-index: 1040;
 }
