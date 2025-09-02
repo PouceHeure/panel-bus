@@ -1,5 +1,5 @@
 // Global constants / variables
-const versionApp = '2.0.0'
+const versionApp = '2.0.1'
 let stationID = 31500 // Default station
 let stationName = ''
 let filterLines = null
