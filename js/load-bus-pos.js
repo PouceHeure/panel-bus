@@ -691,10 +691,10 @@ class DrawBusLine extends Draw {
     ctx.save()
     const w = this.elementDrawer.getPixelFromPercent(6)
     const grad = ctx.createLinearGradient(xStartLine, y, xEndLine, y)
-    grad.addColorStop(0, '#ffffff')
-    grad.addColorStop(0.08, this.elementDrawer.mainColor)
-    grad.addColorStop(0.92, this.elementDrawer.mainColor)
-    grad.addColorStop(1, '#ffffff')
+    // grad.addColorStop(0, '#ffffff')
+    grad.addColorStop(0.0, this.elementDrawer.mainColor)
+    grad.addColorStop(1.0, this.elementDrawer.mainColor)
+    // grad.addColorStop(1, '#ffffff')
     ctx.strokeStyle = grad
     ctx.lineWidth = w
     ctx.lineCap = 'round'
