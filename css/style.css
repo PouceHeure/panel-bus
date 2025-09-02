@@ -182,3 +182,14 @@ canvas { display: none; width: 100%; }
 }
 
 
+/* Default footer text size (inherits Bootstrap small ~.875rem) */
+#controlsContainer {
+  font-size: 0.875rem;
+}
+
+/* On small screens, reduce further */
+@media (max-width: 576px) {
+  #controlsContainer {
+    font-size: 0.8rem; /* smaller, fits better on one line */
+  }
+}
