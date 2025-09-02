@@ -71,8 +71,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const paramStationID = getStationIDFromURL()
   if (paramStationID) stationID = paramStationID
 
-  const paramFilterLines = getFilterLinesFromURL();
-  if(paramFilterLines) filterLines = paramFilterLines;
+  const paramFilterLines = getFilterLinesFromURL()
+  if (paramFilterLines) filterLines = paramFilterLines
 
   fetchAndDisplayBusSchedule()
 
@@ -132,14 +132,14 @@ function getTrackMode () {
   return new URLSearchParams(window.location.search).get('track')
 }
 function getFilterLinesFromURL () {
-  const filterParam = new URLSearchParams(window.location.search).get('filterlines');
-  if(filterParam){
-    return  filterParam.split(',');
+  const filterParam = new URLSearchParams(window.location.search).get(
+    'filterlines'
+  )
+  if (filterParam) {
+    return filterParam.split(',')
   }
   return filterParam
 }
-
-
 
 // Toggle auto-refresh
 function toggleAutoRefresh (isEnabled) {
@@ -162,7 +162,7 @@ function updateDateAndNameStation () {
   const title = `${new Date().toLocaleTimeString(navigator.language, {
     hour: '2-digit',
     minute: '2-digit'
-  })} - ${stationName}`
+  })} - Station: ${stationName}`
   document.getElementById('currentTime').textContent = title
   document.title = `Bus: ${stationName}`
 }
@@ -264,24 +264,19 @@ const displayBusSchedule = busData => {
   busData.forEach(transport => {
     if (transport.transportMode !== 'Bus') return
 
-    
-
     transport.lines.forEach(line => {
-
-      if(filterLines){
-      name_line = line.line.number;
-      let filter_ok = false;
-      filterLines.forEach(
-        filter => {
-          if(name_line.toLowerCase().includes(filter.toLowerCase())){
-            filter_ok = true;
+      if (filterLines) {
+        name_line = line.line.number
+        let filter_ok = false
+        filterLines.forEach(filter => {
+          if (name_line.toLowerCase().includes(filter.toLowerCase())) {
+            filter_ok = true
           }
+        })
+        if (!filter_ok) {
+          return
         }
-      )
-      if(!filter_ok){
-        return;
       }
-    }
 
       // Col
       const col = document.createElement('div')
@@ -300,7 +295,7 @@ const displayBusSchedule = busData => {
       col.appendChild(card)
 
       // Header
-      const color = `#${String(line.line.color || '').replace(/^#/, '')}`
+      const color = `#${String(line.line.color || '').replace(/^#/, '')}CC`
       const header = document.createElement('div')
       header.classList.add(
         'card-header',
@@ -326,40 +321,46 @@ const displayBusSchedule = busData => {
       left.classList.add('bus-card-header-left')
 
       const badgeLine = document.createElement('span')
-badgeLine.classList.add(
-  'badge',
-  'rounded-pill',
-  'bg-dark',
-  'bg-opacity-50',
-  'fs-6',
-  'd-inline-flex',
-  'align-items-center',
-  'gap-1'             // <-- espace automatique entre icône et texte
-)
+      badgeLine.classList.add(
+        'badge',
+        'rounded-pill',
+        'bg-dark',
+        'bg-opacity-50',
+        'fs-6',
+        'd-inline-flex',
+        'align-items-center',
+        'gap-1' // <-- espace automatique entre icône et texte
+      )
 
-// Création de l’icône
-const icon = document.createElement('i')
-icon.classList.add('bi', 'bi-bus-front')
+      // Création de l’icône
+      const icon = document.createElement('i')
+      icon.classList.add('bi', 'bi-bus-front')
+      const lineText = document.createTextNode(line.line.number)
+      badgeLine.append(icon, lineText)
 
-// Texte du numéro de ligne
-const lineText = document.createTextNode(line.line.number)
+      // const title = document.createElement('div')
+      // title.classList.add('station-title', 'fw-bold')
+      // const labelDirection = (line.direction.name || '').split('/')[0].trim()
+      // title.textContent = labelDirection
 
-// On assemble : icône puis numéro
-badgeLine.append(icon, lineText)
 
-      const title = document.createElement('div')
-      title.classList.add('station-title', 'fw-bold')
+      const directionLine = document.createElement('span')
+      directionLine.classList.add(
+        'd-inline-flex',
+        'align-items-center',
+        'rounded-pill',
+        'gap-2',
+        'station-title', 'fw-bold'
+      )
+
+      // Création de l’icône
+      const iconDir = document.createElement('i')
+      iconDir.classList.add('bi', 'bi-signpost','p-2')
       const labelDirection = (line.direction.name || '').split('/')[0].trim()
-      title.textContent = labelDirection
+      const textDir = document.createTextNode(labelDirection)
+      directionLine.append(iconDir, textDir)
 
-      left.append(badgeLine, title)
-
-      // const right = document.createElement('div')
-      // right.classList.add('bus-card-header-right')
-      // right.classList.add('opacity-75', 'd-flex', 'align-items-center', 'gap-1')
-      // const iconHdr = document.createElement('i')
-      // iconHdr.classList.add('bi', 'bi-bus-front')
-      // right.appendChild(iconHdr)
+      left.append(badgeLine, directionLine)
 
       headerWrap.append(left)
       header.appendChild(headerWrap)

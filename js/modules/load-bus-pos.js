@@ -862,7 +862,12 @@ class DrawBus extends Draw {
 
     // halo
 
-    const rgb = hexToRgb(this.elementDrawer.mainColor)
+    const rgb_from_data = hexToRgb(this.elementDrawer.mainColor)
+    let rgb = hexToRgb("#000000")
+    if(rgb_from_data){
+      rgb = rgb_from_data;
+    } 
+
     const radius_hallo = r * 3.0
 
     ctx.beginPath()

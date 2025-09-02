@@ -74,7 +74,7 @@ body { padding-bottom: 76px; }
   background: linear-gradient(135deg, #ffffffcc 0%, #f8f9fae6 100%);
   backdrop-filter: saturate(160%) blur(12px);
   -webkit-backdrop-filter: saturate(160%) blur(12px);
-  border-bottom: 2px solid rgba(0,123,255,.2);
+  /* border-bottom: 2px solid rgba(0,123,255,.2); */
   box-shadow: 0 4px 20px rgba(0,0,0,.06);
   padding-block: .6rem;
   z-index: 1040;
@@ -148,7 +148,7 @@ canvas { display: none; width: 100%; }
   }
   .bus-card-header .badge {
     font-size: clamp(1rem, 3.6vw, 1.15rem);
-    padding: .5rem .85rem;
+    /* padding: .5rem .85rem; */
   }
 
   /* Liste horaires */
@@ -169,3 +169,8 @@ canvas { display: none; width: 100%; }
 @media (max-width: 480px) {
   html { font-size: 12px; }
 }
+
+
+.station-title {
+    text-shadow: 2px 2px #333;
+  }
