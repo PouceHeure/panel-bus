@@ -65,18 +65,39 @@
 
   <!-- Footer with update and version info -->
   <footer class="app-footer fixed-bottom">
-    <div class="container">
-      <div id="controlsContainer" class="d-flex align-items-center justify-content-between gap-3">
-        <span id="updateDate" class="small d-flex align-items-center gap-2">
-          <i class="bi bi-arrow-clockwise"></i><span></span>
+  <div class="container">
+    <div id="controlsContainer"
+         class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+      <span id="updateDate" class="small d-flex align-items-center gap-2">
+        <i class="bi bi-arrow-clockwise"></i><span></span>
+      </span>
+
+      <!-- ▶ Data attribution -->
+      <div id="attribution"
+           class="small d-flex align-items-center gap-2 text-center flex-fill order-3 order-md-2">
+        <i class="bi bi-globe2"></i>
+        <span>
+          Data from
+          <a href="https://www.oise-mobilite.fr/open-data" target="_blank" rel="noopener">
+            Oise Mobilité
+          </a>,
+          accessed on <time id="odataUpdated" datetime=""></time>,
+          under
+          <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence"
+             target="_blank" rel="license noopener">
+            Open Licence / Etalab v2.0
+          </a>.
         </span>
-        <div id="version" class="small d-flex align-items-center gap-2">
-          <i class="bi bi-info-circle"></i>
-          <span>Version: <span id="versionNumber"></span></span>
-        </div>
+      </div>
+
+      <div id="version" class="small d-flex align-items-center gap-2 order-2 order-md-3">
+        <i class="bi bi-info-circle"></i>
+        <span>Version: <span id="versionNumber"></span></span>
       </div>
     </div>
-  </footer>
+  </div>
+</footer>
+
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
