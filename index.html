@@ -67,36 +67,34 @@
   <footer class="app-footer fixed-bottom">
   <div class="container">
     <div id="controlsContainer"
-         class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-      <span id="updateDate" class="small d-flex align-items-center gap-2">
-        <i class="bi bi-arrow-clockwise"></i><span></span>
+         class="d-flex align-items-center justify-content-between flex-nowrap small gap-3 text-truncate">
+
+      <!-- Update date -->
+      <span id="updateDate" class="d-inline-flex align-items-center gap-2 text-truncate">
+        <i class="bi bi-arrow-clockwise"></i>
+        <span></span>
       </span>
 
-      <!-- ▶ Data attribution -->
-      <div id="attribution"
-           class="small d-flex align-items-center gap-2 text-center flex-fill order-3 order-md-2">
+      <!-- Attribution (center) -->
+      <div id="attribution" class="d-inline-flex align-items-center gap-1 text-truncate">
         <i class="bi bi-globe2"></i>
-        <span>
-          Data from
-          <a href="https://www.oise-mobilite.fr/open-data" target="_blank" rel="noopener">
-            Oise Mobilité
-          </a>,
-          accessed on <time id="odataUpdated" datetime=""></time>,
-          under
-          <a href="https://www.etalab.gouv.fr/licence-ouverte-open-licence"
-             target="_blank" rel="license noopener">
-            Open Licence / Etalab v2.0
-          </a>.
+        <span class="text-truncate">
+          Data:
+          <a href="https://www.oise-mobilite.fr/open-data" target="_blank" rel="noopener">Oise Mobilité</a>,
+          <time id="odataUpdated" datetime=""></time>,
+          Etalab v2.0
         </span>
       </div>
 
-      <div id="version" class="small d-flex align-items-center gap-2 order-2 order-md-3">
+      <!-- Version -->
+      <div id="version" class="d-inline-flex align-items-center gap-1 text-truncate">
         <i class="bi bi-info-circle"></i>
-        <span>Version: <span id="versionNumber"></span></span>
+        <span>v<span id="versionNumber"></span></span>
       </div>
     </div>
   </div>
 </footer>
+
 
 
   <!-- Bootstrap JS -->

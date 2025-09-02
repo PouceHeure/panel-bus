@@ -122,6 +122,13 @@ canvas { display: none; width: 100%; }
 /* ===============================
    Responsive
    =============================== */
+
+.station-title {
+    text-shadow: 2px 2px #333;
+  }
+
+
+
 @media (max-width: 800px) {
   html { font-size: 14.5px; }
 
@@ -162,6 +169,10 @@ canvas { display: none; width: 100%; }
     padding: .55rem .9rem;
   }
 
+  .station-title {
+    text-shadow: 1px 1px #333;
+  }
+
   /* Footer */
   #controlsContainer { font-size: clamp(0.95rem, 3.2vw, 1.1rem); }
 }
@@ -171,6 +182,3 @@ canvas { display: none; width: 100%; }
 }
 
 
-.station-title {
-    text-shadow: 2px 2px #333;
-  }
