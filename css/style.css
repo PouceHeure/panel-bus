@@ -190,12 +190,6 @@ canvas { display: none; width: 100%; }
 /* On small screens, reduce further */
 @media (max-width: 800px) {
   #controlsContainer {
-    font-size: 0.75rem; /* smaller, fits better on one line */
-  }
-}
-
-@media (max-width: 500px) {
-  #controlsContainer {
-    font-size: 0.65rem;
+    font-size: 0.70rem; /* smaller, fits better on one line */
   }
 }
