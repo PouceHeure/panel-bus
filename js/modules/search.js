@@ -13,7 +13,7 @@ const LABELS = {
     searching: 'Recherche en cours',
     noresult: 'Pas de résultat',
     btnsearch: "Chercher",
-    title: "Recherche Arrêt"
+    title: "Rechercher Arrêt"
   }
 }
 
