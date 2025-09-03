@@ -210,21 +210,26 @@ class LineBusApp {
 
   /* ----- Stations ----- */
   async loadBusStations() {
-    const params = new URLSearchParams({ Line: this.lineId, Direction: this.lineDirection })
-    const url = `${LineBusApp.BASE_URL_GET_STOPS}?${params.toString()}`
-    try {
-      const r = await fetch(url)
-      if (!r.ok) throw new Error(`Network response not ok: ${r.status}`)
-      const data = await r.json()
-      this.updateStations(data.Data)
-      this.updateStationGoal(this.stationGoalId)
-      this.setupDraw()
-      await this.fetchConnectionToken()
-      return data
-    } catch (e) {
-      console.error('Error loading bus stations:', e)
-    }
+
+  this.statutConnection = StatusConnection.WAIT_CONNECTION
+  this.draw()
+
+  const params = new URLSearchParams({ Line: this.lineId, Direction: this.lineDirection })
+  const url = `${LineBusApp.BASE_URL_GET_STOPS}?${params.toString()}`
+  try {
+    const r = await fetch(url)
+    if (!r.ok) throw new Error(`Network response not ok: ${r.status}`)
+    const data = await r.json()
+    this.updateStations(data.Data)
+    this.updateStationGoal(this.stationGoalId)
+    this.setupDraw()
+    await this.fetchConnectionToken()
+    return data
+  } catch (e) {
+    console.error('Error loading bus stations:', e)
   }
+}
+
   updateStations(raw) {
     this.stations = []
     let distance = 0
@@ -298,6 +303,7 @@ class LineBusApp {
     this.elementDrawer.clearCanvas()
     this.drawerLine.updateStatus(this.statutConnection)
     this.drawerLine.draw()
+
 
     const drawerBus = new DrawBus(this.elementDrawer)
     this.busList.forEach(b => {
@@ -407,6 +413,19 @@ class ElementDrawer {
     this.heightLine = this.height * 0.75
   }
   getPixelFromPercent(p) { return (p * this.width) / 800 }
+
+  getHeightLine() {
+  return this.heightLine
+}
+
+ getWidth () {
+    return this.width
+  }
+
+  getHeight () {
+    return this.height
+  }
+
   clearCanvas() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) }
   transformPositionToPixel(e) {
     return ((e.position_x - this.origin_x) / (this.scale || 1)) * this.distanceDraw + this.startDraw
@@ -438,6 +457,7 @@ class DrawBusLine extends Draw {
     this.stations = []
     this.statusConnection = StatusConnection.WAIT_CONNECTION
     this.loadingAngle = 0
+    this.isAnimatingLoading = false
   }
   updateStations(st) { this.stations = st; this.updateScale() }
   updateStatus(s) { this.statusConnection = s }
@@ -471,19 +491,47 @@ class DrawBusLine extends Draw {
     const ctx = this.elementDrawer.ctx
     const y = this.elementDrawer.getHeightLine()
     const isConnected = this.statusConnection === StatusConnection.CONNECTED
+    
     if (this.statusConnection === StatusConnection.WAIT_CONNECTION) {
-      const cx = this.elementDrawer.getWidth() / 2, cy = this.elementDrawer.getHeight() / 2
-      ctx.save()
-      ctx.lineWidth = 5
-      ctx.strokeStyle = this.elementDrawer.mainColor
-      ctx.beginPath()
-      ctx.arc(cx, cy, 30, this.loadingAngle, this.loadingAngle + Math.PI * 1.2)
-      ctx.stroke()
-      ctx.restore()
-      this.loadingAngle += 0.08
-      requestAnimationFrame(() => this.elementDrawer.clearCanvas() || this.draw())
+      
+      if (!this.isAnimatingLoading) {
+        
+        const animate = () => {
+          
+          if (this.statusConnection !== StatusConnection.WAIT_CONNECTION) {
+            this.isAnimatingLoading = false
+            return
+          }
+          const cx = this.elementDrawer.getWidth() / 2
+          const cy = this.elementDrawer.getHeight() / 2
+          
+          ctx.save()
+          ctx.lineWidth = 5
+          ctx.strokeStyle = this.elementDrawer.mainColor
+          ctx.beginPath()
+          ctx.arc(cx, cy, 30, this.loadingAngle, this.loadingAngle + 0.8)
+          ctx.stroke()
+          ctx.restore()
+          
+          this.loadingAngle += 0.08
+          if (this.loadingAngle >= Math.PI * 2) {
+            this.loadingAngle = 0
+            this.elementDrawer.clearCanvas()
+          }
+
+          requestAnimationFrame(animate)
+        }
+        if(!this.isAnimatingLoading){
+          this.loadingAngle = 0.0
+          animate()
+          this.isAnimatingLoading = true
+        }
+        
+      }
       return
     }
+
+
     // Draw line
     ctx.save()
     const w = this.elementDrawer.getPixelFromPercent(6)
