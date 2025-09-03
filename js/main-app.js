@@ -79,6 +79,10 @@ function getFilterLinesFromURL() {
   return filterParam ? filterParam.split(',') : null
 }
 
+function getHideBarFromURL() {
+  return new URLSearchParams(window.location.search).get('hidebar')
+}
+
 // DOM Helpers
 function clearContainer(el) {
   el.innerHTML = ''
@@ -101,6 +105,12 @@ function getDiffTimeMinutes(a, b) {
 // =======================
 // UI Updates
 // =======================
+
+function hideBar() {
+  document.getElementById("searchLegendContainer").style.display = "none";
+}
+
+
 function updateHeadText() {
   const legendContainer = document.getElementById('legend')
   legendContainer.innerHTML = `
@@ -371,6 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const paramFilterLines = getFilterLinesFromURL()
   if (paramFilterLines) filterLines = paramFilterLines
+
+  const paramHideBar = getHideBarFromURL()
+  if(paramHideBar != null && paramHideBar.toLowerCase() == 'true'){
+    hideBar()
+  };
 
   const paramLang = getLangFromURL()
   language = paramLang ? paramLang.toLowerCase() : navigator.language.split('-')[0]

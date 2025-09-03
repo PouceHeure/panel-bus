@@ -19,7 +19,7 @@ document.getElementById("searchForm").addEventListener("submit", async e => {
     resultsDiv.innerHTML = ""
     data.forEach(item => {
       const link = document.createElement("a")
-      link.href = `index.html?stationID=${item.Id}&name=${encodeURIComponent(item.Name)}`
+      link.href = `index.html?stationID=${item.Id}`
       link.className = "list-group-item list-group-item-action"
       link.innerHTML = `
         <strong>${item.Name}</strong> 
