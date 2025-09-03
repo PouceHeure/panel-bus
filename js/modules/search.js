@@ -66,7 +66,7 @@ document.getElementById("searchForm").addEventListener("submit", async e => {
       resultsDiv.appendChild(link)
     })
   } catch (err) {
-    resultsDiv.innerHTML = `<div class="text-danger">Erreur lors de la recherche</div>`
+    resultsDiv.innerHTML = `<div class="text-danger">Fail during searching</div>`
     console.error(err)
   }
 })
