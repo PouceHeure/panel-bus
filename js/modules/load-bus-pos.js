@@ -493,43 +493,46 @@ class DrawBusLine extends Draw {
     const isConnected = this.statusConnection === StatusConnection.CONNECTED
     
     if (this.statusConnection === StatusConnection.WAIT_CONNECTION) {
-      
-      if (!this.isAnimatingLoading) {
-        
-        const animate = () => {
-          
-          if (this.statusConnection !== StatusConnection.WAIT_CONNECTION) {
-            this.isAnimatingLoading = false
-            return
-          }
-          const cx = this.elementDrawer.getWidth() / 2
-          const cy = this.elementDrawer.getHeight() / 2
-          
-          ctx.save()
-          ctx.lineWidth = 5
-          ctx.strokeStyle = this.elementDrawer.mainColor
-          ctx.beginPath()
-          ctx.arc(cx, cy, 30, this.loadingAngle, this.loadingAngle + 0.8)
-          ctx.stroke()
-          ctx.restore()
-          
-          this.loadingAngle += 0.08
-          if (this.loadingAngle >= Math.PI * 2) {
-            this.loadingAngle = 0
-            this.elementDrawer.clearCanvas()
-          }
+  if (!this.isAnimatingLoading) {
+    console.log("ici")
+    this.isAnimatingLoading = true
+    this.loadingProgress = 0
 
-          requestAnimationFrame(animate)
-        }
-        if(!this.isAnimatingLoading){
-          this.loadingAngle = 0.0
-          animate()
-          this.isAnimatingLoading = true
-        }
-        
+    const animate = () => {
+      if (this.statusConnection !== StatusConnection.WAIT_CONNECTION) {
+        return // stop si plus en attente
       }
-      return
+
+      const ctx = this.elementDrawer.ctx
+      const y = this.elementDrawer.getHeightLine()
+
+      // 🔥 efface avant de redessiner
+      this.elementDrawer.clearCanvas()
+
+      // dessine la ligne partielle
+      ctx.save()
+      ctx.strokeStyle = this.elementDrawer.mainColor
+      ctx.lineWidth = this.elementDrawer.getPixelFromPercent(6)
+      ctx.lineCap = "round"
+      ctx.beginPath()
+      ctx.moveTo(0, y)
+      ctx.lineTo(this.elementDrawer.width * this.loadingProgress, y)
+      ctx.stroke()
+      ctx.restore()
+
+      // incrémente la progression (0 → 1)
+      this.loadingProgress += 0.01
+      if (this.loadingProgress > 1) {
+        this.loadingProgress = 0 // repart de 0 si tu veux une boucle infinie
+      }
+
+      requestAnimationFrame(animate)
     }
+
+    animate()
+  }
+  return
+}
 
 
     // Draw line
