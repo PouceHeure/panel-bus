@@ -35,3 +35,8 @@ Compiègne Station IDS table -> [here](./doc/station_ids.md);
 - Centre Culturel: https://pouceheure.github.io/panel-bus/?stationID=31587
 - Saint Côme Mémorial: https://pouceheure.github.io/panel-bus/?stationID=31657
 - Gare Compiègne: https://pouceheure.github.io/panel-bus/?stationID=41434
+
+
+## Data
+
+Data source: [Oise Mobilité](https://www.oise-mobilite.fr/open-data), Etalab v2.0
