@@ -32,6 +32,7 @@ const LABELS = {
     autoRefresh: 'Auto Refresh',
     waitingConnection: 'Waiting Connection',
     update: 'Update',
+    station: 'Station',
     status: 'Status',
     statusConnected: 'Connected',
     statusWaitConnection: 'Waiting Connection',
@@ -46,6 +47,7 @@ const LABELS = {
     autoRefresh: 'Actualiser',
     waitingConnection: 'Connexion En Cours',
     update: 'Mise à Jour',
+    station: 'Arrêt',
     status: 'Status',
     statusConnected: 'Connecté',
     statusWaitConnection: 'Connexion En Cours',
@@ -124,7 +126,8 @@ function updateDateAndNameStation() {
 
   let title, siteName
   if (stationName) {
-    title = `${currentTimeStr} - Station: ${stationName}`
+    const stationWorld = getLabel('station')
+    title = `${currentTimeStr} - ${stationWorld}: ${stationName}`
     siteName = `Bus: ${stationName}`
   } else {
     title = `${currentTimeStr} - ${appState}`
