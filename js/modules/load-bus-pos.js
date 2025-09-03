@@ -500,16 +500,14 @@ class DrawBusLine extends Draw {
 
     const animate = () => {
       if (this.statusConnection !== StatusConnection.WAIT_CONNECTION) {
-        return // stop si plus en attente
+        return
       }
 
       const ctx = this.elementDrawer.ctx
       const y = this.elementDrawer.getHeightLine()
 
-      // 🔥 efface avant de redessiner
       this.elementDrawer.clearCanvas()
 
-      // dessine la ligne partielle
       ctx.save()
       ctx.strokeStyle = this.elementDrawer.mainColor
       ctx.lineWidth = this.elementDrawer.getPixelFromPercent(6)
@@ -520,10 +518,9 @@ class DrawBusLine extends Draw {
       ctx.stroke()
       ctx.restore()
 
-      // incrémente la progression (0 → 1)
       this.loadingProgress += 0.01
       if (this.loadingProgress > 1) {
-        this.loadingProgress = 0 // repart de 0 si tu veux une boucle infinie
+        this.loadingProgress = 0
       }
 
       requestAnimationFrame(animate)
