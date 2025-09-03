@@ -1,8 +1,7 @@
-(Result applying the following get: https://api.oisemob.cityway.fr/search/all?keywords=Compiègne&maxitems=200&objectTypes=1;2;3&includedPoiCategories=3)
+(Result applying the following get: https://api.oisemob.cityway.fr/search/all?keywords=Compiègne&maxitems=200&objectTypes=2&includedPoiCategories=3)
 
 | Nom de la Station            | ID     |
 |------------------------------|--------|
-| Compiègne                     | 1926   |
 | Gare Compiègne                | 41434  |
 | Guy Deniélou                  | 31500  |
 | Blaise Pascal                 | 31583  |

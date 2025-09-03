@@ -2,7 +2,11 @@
 
 Page: https://pouceheure.github.io/panel-bus/
 
-## How Use It ?
+## Station ID
+
+The web application uses the ID station to get information about this station.
+
+> Now you can use the search page, to find the station url: https://pouceheure.github.io/panel-bus/search.html
 
 ```html
 # generic
@@ -19,6 +23,8 @@ https://pouceheure.github.io/panel-bus/?stationID=<ID>&lang={fr,en}
   - once found, select the number at the end of the URL;
 
 Compiègne Station IDS table -> [here](./doc/station_ids.md);
+
+
 
 ## Station Example List
 
