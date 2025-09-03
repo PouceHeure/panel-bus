@@ -132,6 +132,8 @@ canvas { display: none; width: 100%; }
 @media (max-width: 800px) {
   html { font-size: 14.5px; }
 
+  .app-header-spacer { height: 60px; }
+
   /* App header */
   .app-header #currentTime { font-size: clamp(1.6rem, 5.2vw, 2rem); }
   .app-header #legend { font-size: clamp(0.95rem, 3.2vw, 1.1rem); }
