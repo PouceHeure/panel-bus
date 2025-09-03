@@ -31,6 +31,7 @@ const LABELS = {
     scheduledTime: 'Scheduled Time',
     autoRefresh: 'Auto Refresh',
     waitingConnection: 'Waiting Connection',
+    search: "Search station",
     update: 'Update',
     station: 'Station',
     status: 'Status',
@@ -47,6 +48,7 @@ const LABELS = {
     autoRefresh: 'Actualiser',
     waitingConnection: 'Connexion En Cours',
     update: 'Mise à Jour',
+    search: "Chercher arrêt",
     station: 'Arrêt',
     status: 'Status',
     statusConnected: 'Connecté',
@@ -389,6 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const paramLang = getLangFromURL()
   language = paramLang ? paramLang.toLowerCase() : navigator.language.split('-')[0]
+
+  document.getElementById("text-search").textContent = getLabel("search")
 
   toggleAutoRefresh(true)
   fetchAndDisplayBusSchedule()
