@@ -1,5 +1,6 @@
 // Labels
 
+const TIME_BETWEEN_REQ_ACCEPTABLE = 200 // [ms]
 let language = "fr"
 
 const LABELS = {
@@ -36,14 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("title").textContent = getLabel("title")
 })
 
-document.getElementById("searchForm").addEventListener("submit", async e => {
+function debounce(fn, delay) {
+  let timeout
+  return function (...args) {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => fn.apply(this, args), delay)
+  }
+}
+
+async function do_req_search(e){
   e.preventDefault()
   const keyword = document.getElementById("searchInput").value.trim()
   if (!keyword) return
 
   const url = `https://api.oisemob.cityway.fr/search/all?keywords=${encodeURIComponent(keyword)}&maxitems=200&objectTypes=2&includedPoiCategories=3`
   const resultsDiv = document.getElementById("results")
-  resultsDiv.innerHTML = `<div class="text-muted">${getLabel("searching")}...</div>`
+  // resultsDiv.innerHTML = `<div class="text-muted">${getLabel("searching")}...</div>`
 
   try {
     const res = await fetch(url)
@@ -61,7 +70,7 @@ document.getElementById("searchForm").addEventListener("submit", async e => {
       link.className = "list-group-item list-group-item-action"
       link.innerHTML = `
         <strong>${item.Name}</strong> 
-        <small class="text-muted">(${item.CityName || ""})</small>
+        <small class="text-primary">(${item.CityName || ""})</small>
       `
       resultsDiv.appendChild(link)
     })
@@ -69,4 +78,10 @@ document.getElementById("searchForm").addEventListener("submit", async e => {
     resultsDiv.innerHTML = `<div class="text-danger">Fail during searching</div>`
     console.error(err)
   }
-})
+}
+
+document.getElementById("searchForm").addEventListener("input", debounce(async e => {
+  do_req_search(e)
+}, TIME_BETWEEN_REQ_ACCEPTABLE))
+
+document.getElementById("searchForm").addEventListener("submit", async e => {do_req_search(e)})
